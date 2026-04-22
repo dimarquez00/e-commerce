@@ -12,18 +12,20 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component // crea, lee y valida tokens
 public class JwtUtil {
     @Value("${jwt.secret}")
-    private String secret;
+    private String secret; // clave secreta para firmar el token
 
     @Value("${jwt.expiration}")
-    private Long expiration;
+    private Long expiration; // tiempo de expiracion del token
 
+    // generacion de clave de firma a partir del secret
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
+    // token con username y roles
     public String generateToken(String userName, Set<String> roles) {
         return Jwts.builder()
                 .setSubject(userName)
@@ -34,6 +36,7 @@ public class JwtUtil {
                 .compact();
     }
 
+    // obtencion de username y roles desde el token
     public String getUsername(String token) {
         return getClaims(token).getSubject();
     }
@@ -43,6 +46,7 @@ public class JwtUtil {
         return Set.of(roles.split(","));
     }
 
+    // validacion de token expirado
     public boolean validateToken(String token) {
         try {
             Claims claims = getClaims(token);
@@ -52,6 +56,7 @@ public class JwtUtil {
         }
     }
 
+    // extraccion de datos del token
     private Claims getClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
