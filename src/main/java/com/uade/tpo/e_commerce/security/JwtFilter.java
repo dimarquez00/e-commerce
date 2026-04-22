@@ -16,48 +16,33 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+//Filtro de seguridad encargado de validar el JWT y autenticar al usuario
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtUtil jwtUtil; // utilidad para el jwt
+    private JwtUtil jwtUtil; // Manejo de token JWT
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-
         String header = request.getHeader("Authorization");
 
-        // chequea si hay header
-        if (header != null) {
+        // Se verifica si existe y tenga formato "bearer token"
+        if (header != null && header.startsWith("Bearer ")) {
+            String token = header.substring(7);
+            if (jwtUtil.validateToken(token)) {
+                String username = jwtUtil.getUsername(token);
+                Set<String> roles = jwtUtil.getRoles(token);
 
-            // verifica si empieza con Bearer
-            if (header.startsWith("Bearer ")) {
-
-                String token = header.substring(7);
-
-                // valida el token
-                if (jwtUtil.validateToken(token)) {
-
-                    String username = jwtUtil.getUsername(token);
-                    Set<String> roles = jwtUtil.getRoles(token);
-
-                    // transforma roles
-                    var authorities = roles.stream()
-                            .map(r -> new SimpleGrantedAuthority(r))
-                            .collect(Collectors.toList());
-
-                    // crea autenticacion
-                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null,
-                            authorities);
-
-                    // setea en el contexto
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-                }
+                // convierte roles a autoridades de spring security
+                var authorities = roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+                var auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
 
-        // continua el filtro
+        // sigue con la cadena de filtros
         filterChain.doFilter(request, response);
     }
 
