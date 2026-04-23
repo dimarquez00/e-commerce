@@ -10,9 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.uade.tpo.e_commerce.exception.UserNotFoundException;
 import com.uade.tpo.e_commerce.model.Address;
 import com.uade.tpo.e_commerce.model.User;
-import com.uade.tpo.e_commerce.model.dto.AddressCreateDTO;
 import com.uade.tpo.e_commerce.model.dto.AddressDTO;
-import com.uade.tpo.e_commerce.model.dto.UserCreateDTO;
 import com.uade.tpo.e_commerce.model.dto.UserDTO;
 import com.uade.tpo.e_commerce.repository.UserRepository;
 
@@ -38,12 +36,6 @@ public class UserService {
     // Obtiene un usuario por id o lanza UserNotFoundException.
     public UserDTO getUserById(Long id) {
         User entity = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        return entityToDto(entity);
-    }
-
-    // Crea un usuario desde el DTO de alta (con dirección) y devuelve UserDTO.
-    public UserDTO createUser(UserCreateDTO dto) {
-        User entity = userRepository.save(dtoCreateToEntity(dto));
         return entityToDto(entity);
     }
 
@@ -89,16 +81,6 @@ public class UserService {
                 .build();
     }
 
-    // Mapea DTO de creación a entidad nueva (dirección sin id previo del cliente).
-    private User dtoCreateToEntity(UserCreateDTO dto) {
-        return User.builder()
-                .name(dto.getName())
-                .dateOB(dto.getDateOB())
-                .email(dto.getEmail())
-                .address(adressDtoCreateToEntity(dto.getAddress()))
-                .build();
-    }
-
     // Mapea Address persistida a AddressDTO.
     private AddressDTO adressEntityToDto (Address entity) {
         return AddressDTO.builder()
@@ -114,16 +96,6 @@ public class UserService {
     private Address adressDtoToEntity (AddressDTO dto) {
         return Address.builder()
                 .id(dto.getId())
-                .street(dto.getStreet())
-                .city(dto.getCity())
-                .province(dto.getProvince())
-                .postalCode(dto.getPostalCode())
-                .build();
-    }
-
-    // Mapea DTO de alta de dirección a entidad nueva para un usuario recién creado.
-    private Address adressDtoCreateToEntity (AddressCreateDTO dto) {
-        return Address.builder()
                 .street(dto.getStreet())
                 .city(dto.getCity())
                 .province(dto.getProvince())
