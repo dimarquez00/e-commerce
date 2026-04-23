@@ -2,6 +2,7 @@ package com.uade.tpo.e_commerce.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -49,6 +50,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) //desactiva CSRF para APIs REST
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll() //permite acceso libre a auth
+                .requestMatchers(HttpMethod.GET, "/api/products").permitAll() // catálogo: listar productos sin JWT
                 .anyRequest().authenticated()) //el resto requiere autenticación
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); //agrega el filtro JWT
 
