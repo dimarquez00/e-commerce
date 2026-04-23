@@ -1,0 +1,391 @@
+{
+  "info": {
+    "_postman_id": "e-commerce-tpo-uade",
+    "name": "e-commerce API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "item": [
+    {
+      "name": "Autenticación",
+      "auth": { "type": "noauth" },
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Usuario\",\n  \"dateOB\": \"2000-01-01\",\n  \"email\": \"usuario@uade.edu.ar\",\n  \"password\": \"contraseña123\",\n  \"address\": {\n    \"street\": \"Av. Corrientes 1234\",\n    \"city\": \"CABA\",\n    \"province\": \"Buenos Aires\",\n    \"postalCode\": \"C1043\"\n  }\n}\n",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "http://localhost:8080/api/auth/register"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"usuario@uade.edu.ar\",\n  \"password\": \"contraseña123\"\n}\n",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "http://localhost:8080/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categorías",
+      "auth": { "type": "noauth" },
+      "item": [
+        {
+          "name": "Listar categorías",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/categories"
+          }
+        },
+        {
+          "name": "Obtener categoría por id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/categories/1"
+          }
+        },
+        {
+          "name": "Crear categoría",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Electrónica\"\n}\n",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "http://localhost:8080/api/categories"
+          }
+        },
+        {
+          "name": "Actualizar categoría",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Electrónica actualizada\"\n}\n",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "http://localhost:8080/api/categories/1"
+          }
+        },
+        {
+          "name": "Eliminar categoría",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": "http://localhost:8080/api/categories/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "auth": { "type": "noauth" },
+      "item": [
+        {
+          "name": "Listar productos",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/products"
+          }
+        },
+        {
+          "name": "Obtener producto por id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/products/1"
+          }
+        },
+        {
+          "name": "Crear producto",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Producto de prueba\",\n  \"description\": \"Descripción de ejemplo\",\n  \"price\": 99.99,\n  \"stock\": 10\n}\n",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "http://localhost:8080/api/products"
+          }
+        },
+        {
+          "name": "Actualizar producto",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Producto actualizado\",\n  \"description\": \"Nueva descripción\",\n  \"price\": 149.5,\n  \"stock\": 5\n}\n",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "http://localhost:8080/api/products/1"
+          }
+        },
+        {
+          "name": "Eliminar producto",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": "http://localhost:8080/api/products/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pedidos",
+      "auth": { "type": "noauth" },
+      "item": [
+        {
+          "name": "Listar pedidos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/orders"
+          }
+        },
+        {
+          "name": "Obtener pedido por id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/orders/1"
+          }
+        },
+        {
+          "name": "Crear pedido",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 1\n}\n",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "http://localhost:8080/api/orders"
+          }
+        },
+        {
+          "name": "Agregar producto al pedido",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": "http://localhost:8080/api/orders/1/products/1"
+          }
+        },
+        {
+          "name": "Quitar producto del pedido",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": "http://localhost:8080/api/orders/1/products/1"
+          }
+        },
+        {
+          "name": "Eliminar pedido",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": "http://localhost:8080/api/orders/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "auth": { "type": "noauth" },
+      "item": [
+        {
+          "name": "Listar usuarios",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/users"
+          }
+        },
+        {
+          "name": "Obtener usuario por id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": "http://localhost:8080/api/users/1"
+          }
+        },
+        {
+          "name": "Actualizar usuario",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Cliente actualizado\",\n  \"dateOB\": \"2000-01-10\",\n  \"email\": \"cliente.actualizado@uade.edu.ar\",\n  \"address\": {\n    \"id\": 1,\n    \"street\": \"Nueva calle 456\",\n    \"city\": \"Springfield\",\n    \"province\": \"BA\",\n    \"postalCode\": \"2000\"\n  }\n}\n",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "http://localhost:8080/api/users/1"
+          }
+        },
+        {
+          "name": "Eliminar usuario",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "pegar_token_jwt", "type": "string" }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": "http://localhost:8080/api/users/1"
+          }
+        }
+      ]
+    }
+  ]
+}
