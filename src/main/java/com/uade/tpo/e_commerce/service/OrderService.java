@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.uade.tpo.e_commerce.exception.OrderConfirmedException;
 import com.uade.tpo.e_commerce.exception.OrderEmptyException;
 import com.uade.tpo.e_commerce.exception.OrderNotFoundException;
 import com.uade.tpo.e_commerce.exception.ProductNotFoundException;
 import com.uade.tpo.e_commerce.exception.UserNotFoundException;
 import com.uade.tpo.e_commerce.model.Order;
+import com.uade.tpo.e_commerce.model.OrderState;
 import com.uade.tpo.e_commerce.model.Product;
 import com.uade.tpo.e_commerce.model.User;
 import com.uade.tpo.e_commerce.model.dto.OrderDTO;
@@ -59,7 +61,6 @@ public class OrderService {
     public OrderResponseDTO createOrder(OrderDTO dto) {
         if (dto.getUserId()==null) {
             throw new UserNotFoundException("Id de usuario vacio");
-            
         }
 
         User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new UserNotFoundException(dto.getUserId()));
@@ -68,6 +69,7 @@ public class OrderService {
         order.setDate(LocalDate.now());
         order.setUser(user);
         order.setTotal(0.0);
+        order.setState(OrderState.CREATED);
         orderRepository.save(order);
         return entityToResponseDto(order);
     }
@@ -75,6 +77,7 @@ public class OrderService {
     // Agrega un producto al pedido y suma su precio al total.
     public OrderResponseDTO addProduct(Long orderId, Long productId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
+        notConfirmed(order.getState(), orderId);
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
 
         productService.removeStock(productId);
@@ -87,6 +90,7 @@ public class OrderService {
     // Quita un producto del pedido y resta su precio del total.
     public OrderResponseDTO removeProduct(Long orderId, Long productId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
+        notConfirmed(order.getState(), orderId);
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
 
         if (order.getProducts().isEmpty()) {
@@ -103,6 +107,7 @@ public class OrderService {
     // Elimina el pedido por id y devuelve el DTO de lo borrado; falla si no existe.
     public OrderResponseDTO deleteOrder(Long id) {
         Order deleted = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+        notConfirmed(deleted.getState(), id);
 
         for (Product product : deleted.getProducts()) {
             productService.addStock(product.getId());
@@ -110,6 +115,17 @@ public class OrderService {
 
         orderRepository.delete(deleted);
         return entityToResponseDto(deleted); 
+    }
+
+    public OrderResponseDTO confirmOrder(Long id) {
+        Order entity = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+
+        notConfirmed(entity.getState(), id);
+
+        entity.setState(OrderState.CONFIRMED);
+        orderRepository.save(entity);
+
+        return entityToResponseDto(entity);
     }
 
     // Mapea Order a OrderResponseDTO (ids de usuario y productos, total).
@@ -120,7 +136,14 @@ public class OrderService {
                 .userId(entity.getUser().getId())
                 .products(entity.getProducts().stream().map(Product::getId).collect(Collectors.toList()))
                 .total(entity.getTotal())
+                .state(entity.getState().toString())
                 .build();
+    }
+
+    private void notConfirmed(OrderState state, Long id) {
+        if (state.equals(OrderState.CONFIRMED)) {
+            throw new OrderConfirmedException(id);
+        }
     }
 
 }

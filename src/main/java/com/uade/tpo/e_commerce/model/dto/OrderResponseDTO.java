@@ -22,4 +22,6 @@ public class OrderResponseDTO {
 
     private Double total;
 
+    private String state;
+
 }

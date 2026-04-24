@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.uade.tpo.e_commerce.model.dto.OrderDTO;
 import com.uade.tpo.e_commerce.model.dto.OrderResponseDTO;
 import com.uade.tpo.e_commerce.service.OrderService;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping("/api/orders")
@@ -55,6 +57,11 @@ public class OrderController {
     public ResponseEntity<OrderResponseDTO> deleteOrder(@PathVariable Long id) {
         OrderResponseDTO result = orderService.deleteOrder(id);
         return ResponseEntity.ok(result);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<OrderResponseDTO> confirmOrder(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.confirmOrder(id));
     }
     
 }
