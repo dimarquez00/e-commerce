@@ -1,7 +1,5 @@
 package com.uade.tpo.e_commerce.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,6 +32,5 @@ public class Address {
     private String postalCode;
 
     @OneToOne(mappedBy = "address")
-    @JsonIgnore
     private User user;
 }

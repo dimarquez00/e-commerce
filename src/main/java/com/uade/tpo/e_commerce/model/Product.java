@@ -3,8 +3,6 @@ package com.uade.tpo.e_commerce.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -41,14 +39,8 @@ public class Product {
     private Integer stock;
 
     @ManyToMany(mappedBy = "products")
-    @JsonIgnore
-    @Builder.Default
+    @Default
     private List<Order> orders = new ArrayList<>();
-
-    // @ManyToMany(mappedBy = "products")
-    // @JsonIgnore
-    // @Builder.Default
-    // private List<Category> caterogies = new ArrayList<>();
     
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

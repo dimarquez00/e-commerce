@@ -8,7 +8,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -53,7 +52,6 @@ public class User implements UserDetails {
     private Address address;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<Order> orders;
 
     @Enumerated(EnumType.STRING)
