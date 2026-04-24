@@ -103,6 +103,11 @@ public class OrderService {
     // Elimina el pedido por id y devuelve el DTO de lo borrado; falla si no existe.
     public OrderResponseDTO deleteOrder(Long id) {
         Order deleted = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+
+        for (Product product : deleted.getProducts()) {
+            productService.addStock(product.getId());
+        }
+
         orderRepository.delete(deleted);
         return entityToResponseDto(deleted); 
     }
