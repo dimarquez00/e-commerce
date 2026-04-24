@@ -37,4 +37,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> manageOrderEmpty(OrderEmptyException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
+    @ExceptionHandler(NoMoreStockException.class)
+    public ResponseEntity<String> manageNoMoreStock(NoMoreStockException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

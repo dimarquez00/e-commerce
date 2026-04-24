@@ -35,6 +35,9 @@ public class OrderService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private ProductService productService;
+
     // Lista todos los pedidos como DTOs de respuesta (ids de productos y total).
     public List<OrderResponseDTO> getOrders() {
         List<Order> entityList = orderRepository.findAll();
@@ -74,6 +77,8 @@ public class OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
 
+        productService.removeStock(productId);
+
         order.getProducts().add(product);
         order.setTotal(order.getTotal() + product.getPrice());
         return entityToResponseDto(orderRepository.save(order));
@@ -87,6 +92,8 @@ public class OrderService {
         if (order.getProducts().isEmpty()) {
             throw new OrderEmptyException(orderId);
         }
+
+        productService.addStock(productId);
 
         order.getProducts().remove(product);
         order.setTotal(order.getTotal() - product.getPrice());

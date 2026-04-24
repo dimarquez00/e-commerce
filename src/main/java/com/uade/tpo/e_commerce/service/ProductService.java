@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.uade.tpo.e_commerce.exception.CategoryNotFoundException;
+import com.uade.tpo.e_commerce.exception.NoMoreStockException;
 import com.uade.tpo.e_commerce.exception.ProductNotFoundException;
 import com.uade.tpo.e_commerce.model.Product;
 import com.uade.tpo.e_commerce.model.Category;
@@ -65,6 +66,23 @@ public class ProductService {
         Product deleted = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
         productRepository.delete(deleted);
         return entityToDto(deleted); 
+    }
+
+    public void addStock(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+        Integer stock = product.getStock();
+        product.setStock(stock + 1);
+        productRepository.save(product);
+    }
+
+    public void removeStock(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+        if (product.getStock() == 0) {
+            throw new NoMoreStockException(id);
+        }
+        Integer stock = product.getStock();
+        product.setStock(stock - 1);
+        productRepository.save(product);
     }
 
     // Mapea entidad Product a ProductDTO para la API.
