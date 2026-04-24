@@ -32,4 +32,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> manageEmailInUse(EmailInUseException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+    
+    @ExceptionHandler(OrderEmptyException.class)
+    public ResponseEntity<String> manageOrderEmpty(OrderEmptyException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

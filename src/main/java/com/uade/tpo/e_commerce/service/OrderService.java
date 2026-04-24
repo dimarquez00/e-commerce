@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.uade.tpo.e_commerce.exception.OrderEmptyException;
 import com.uade.tpo.e_commerce.exception.OrderNotFoundException;
 import com.uade.tpo.e_commerce.exception.ProductNotFoundException;
 import com.uade.tpo.e_commerce.exception.UserNotFoundException;
@@ -82,6 +83,10 @@ public class OrderService {
     public OrderResponseDTO removeProduct(Long orderId, Long productId) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(productId));
+
+        if (order.getProducts().isEmpty()) {
+            throw new OrderEmptyException(orderId);
+        }
 
         order.getProducts().remove(product);
         order.setTotal(order.getTotal() - product.getPrice());
