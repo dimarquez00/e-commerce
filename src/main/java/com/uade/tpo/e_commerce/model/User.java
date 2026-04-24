@@ -44,7 +44,9 @@ public class User implements UserDetails {
     @Column(columnDefinition = "DATE")
     private LocalDate dateOB;
     
+    @Column(nullable = false)
     private String email;
+    @Column(nullable = false)
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL)
