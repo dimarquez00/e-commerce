@@ -3,15 +3,19 @@ package com.uade.tpo.e_commerce.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.uade.tpo.e_commerce.exception.CategoryNotFoundException;
 import com.uade.tpo.e_commerce.exception.ProductNotFoundException;
 import com.uade.tpo.e_commerce.model.Product;
+import com.uade.tpo.e_commerce.model.Category;
 import com.uade.tpo.e_commerce.model.dto.ProductCreateDTO;
 import com.uade.tpo.e_commerce.model.dto.ProductDTO;
+import com.uade.tpo.e_commerce.repository.CategoryRepository;
 import com.uade.tpo.e_commerce.repository.ProductRepository;
 
 @Service
@@ -20,6 +24,9 @@ public class ProductService {
     
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     // Lista todos los productos como DTOs.
     public List<ProductDTO> getProducts() {
@@ -68,6 +75,7 @@ public class ProductService {
                 .description(entity.getDescription())
                 .price(entity.getPrice())
                 .stock(entity.getStock())
+                .categories(CategoryEntityToIds(entity.getCategories()))
                 .build();
     }
 
@@ -79,6 +87,7 @@ public class ProductService {
                 .description(dto.getDescription())
                 .price(dto.getPrice())
                 .stock(dto.getStock())
+                .categories(CategoryIdsToEntity(dto.getCategories()))
                 .build();
     }
 
@@ -89,7 +98,20 @@ public class ProductService {
                 .description(dto.getDescription())
                 .price(dto.getPrice())
                 .stock(dto.getStock())
+                .categories(CategoryIdsToEntity(dto.getCategories()))
                 .build();
+    }
+
+    private List<Long> CategoryEntityToIds(List<Category> entity) {
+        return entity.stream()
+                .map(Category::getId)
+                .collect(Collectors.toList());
+    }
+
+    private List<Category> CategoryIdsToEntity(List<Long> ids) {
+        return ids.stream()
+                .map(id -> categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id)))
+                .collect(Collectors.toList());
     }
 
 }
