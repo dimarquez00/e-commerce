@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.uade.tpo.e_commerce.exception.EmailInUseException;
 import com.uade.tpo.e_commerce.exception.UserNotFoundException;
 import com.uade.tpo.e_commerce.model.Address;
 import com.uade.tpo.e_commerce.model.User;
@@ -44,11 +45,18 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         dto.setId(id);
 
+        if (dto.getEmail() == user.getEmail()) {
+            throw new EmailInUseException(dto.getEmail());
+        }
+
         AddressDTO addressDTO = dto.getAddress();
         addressDTO.setId(user.getAddress().getId());
         dto.setAddress(addressDTO);
 
-        userRepository.save(dtoToEntity(dto));
+        User entity = dtoToEntity(dto);
+        entity.setPassword(user.getPassword());
+
+        userRepository.save(entity);
         return dto;
     }
 

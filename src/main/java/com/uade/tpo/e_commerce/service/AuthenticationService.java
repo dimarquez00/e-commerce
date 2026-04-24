@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.uade.tpo.e_commerce.exception.EmailInUseException;
 import com.uade.tpo.e_commerce.model.Address;
 import com.uade.tpo.e_commerce.model.Role;
 import com.uade.tpo.e_commerce.model.User;
@@ -33,7 +34,7 @@ public class AuthenticationService {
     // Registra un usuario nuevo (valida email único), persiste con contraseña hasheada y devuelve JWT.
     public AuthenticationResponse register (AuthenticationRegisterRequestDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("El email ya esta en uso.");
+            throw new EmailInUseException(dto.getEmail());
         }
 
         User entity = User.builder()

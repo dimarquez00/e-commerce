@@ -27,4 +27,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> manageCategoryNotFound(CategoryNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+
+    @ExceptionHandler(EmailInUseException.class)
+    public ResponseEntity<String> manageEmailInUse(EmailInUseException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }
