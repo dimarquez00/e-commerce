@@ -16,6 +16,7 @@ import com.uade.tpo.e_commerce.model.Product;
 import com.uade.tpo.e_commerce.model.Category;
 import com.uade.tpo.e_commerce.model.dto.ProductCreateDTO;
 import com.uade.tpo.e_commerce.model.dto.ProductDTO;
+import com.uade.tpo.e_commerce.model.dto.ProductUpdateDTO;
 import com.uade.tpo.e_commerce.repository.CategoryRepository;
 import com.uade.tpo.e_commerce.repository.ProductRepository;
 
@@ -54,11 +55,10 @@ public class ProductService {
     }
 
     // Actualiza datos del producto indicado por id; falla si no existe.
-    public ProductDTO updateProduct(ProductDTO dto, Long id) {
+    public ProductDTO updateProduct(ProductUpdateDTO dto, Long id) {
         productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
-        dto.setId(id);
-        productRepository.save(dtoToEntity(dto));
-        return dto;
+        Product saved = productRepository.save(dtoUpdateToEntity(dto, id));
+        return entityToDto(saved);
     }
 
     // Elimina el producto por id y devuelve el DTO de lo borrado; falla si no existe.
@@ -97,10 +97,10 @@ public class ProductService {
                 .build();
     }
 
-    // Mapea ProductDTO (con id) a entidad para persistir actualizaciones.
-    private Product dtoToEntity(ProductDTO dto) {
+    // Mapea DTO de actualización + id de ruta a entidad para persistir.
+    private Product dtoUpdateToEntity(ProductUpdateDTO dto, Long id) {
         return Product.builder()
-                .id(dto.getId())
+                .id(id)
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .price(dto.getPrice())
@@ -127,6 +127,9 @@ public class ProductService {
     }
 
     private List<Category> CategoryIdsToEntity(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
         return ids.stream()
                 .map(id -> categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id)))
                 .collect(Collectors.toList());

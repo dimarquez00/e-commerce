@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.uade.tpo.e_commerce.model.dto.ProductCreateDTO;
 import com.uade.tpo.e_commerce.model.dto.ProductDTO;
+import com.uade.tpo.e_commerce.model.dto.ProductUpdateDTO;
 import com.uade.tpo.e_commerce.service.ProductService;
 
 @RestController
@@ -43,7 +44,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDto) {
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductUpdateDTO productDto) {
         ProductDTO result = productService.updateProduct(productDto, id);
         return ResponseEntity.ok(result);
     }
