@@ -48,7 +48,7 @@ public class AuthenticationService {
         userRepository.save(entity);
         
         String jwtToken = jwtUtil.generateToken(entity.getEmail(), Set.of(entity.getRole().name()));
-        return AuthenticationResponse.builder().accesToken(jwtToken).build();
+        return AuthenticationResponse.builder().accessToken(jwtToken).build();
     }
 
     // Valida credenciales con Spring Security y devuelve un JWT si el login es correcto.
@@ -62,7 +62,7 @@ public class AuthenticationService {
         //                         .collect(Collectors.toSet());
         
         String jwtToken = jwtUtil.generateToken(entity.getEmail(), Set.of(entity.getRole().name()));
-        return AuthenticationResponse.builder().accesToken(jwtToken).build();
+        return AuthenticationResponse.builder().accessToken(jwtToken).build();
     }
 
     // Convierte el DTO de dirección del registro en entidad Address para persistirla con el usuario.
