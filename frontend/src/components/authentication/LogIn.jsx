@@ -1,3 +1,4 @@
+import { Box, Button, Container, TextField, Typography } from "@mui/material"
 import {useEffect, useState } from "react"
 
 
@@ -38,15 +39,22 @@ const LogIn = () => {
     }
 
     return (
-        <>
-            <form onSubmit={(e) => e.preventDefault()}>
-                <label>email</label>
-                <input type="text" name="email" onChange={handleChangeEmail}/><br />
-                <label>password</label>
-                <input type="text" name="password" onChange={handleChangePassword}/><br />
-                <button onClick={handleClick}>enviar</button>
-            </form>
-        </>
+        <Container>
+            <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                gap: 3,
+                width: 400,
+                m: 4,
+                }}>
+                <TextField name="email" onChange={handleChangeEmail} variant="outlined" label="email"></TextField>
+                <TextField name="password" onChange={handleChangePassword} variant="outlined" label="password"></TextField>
+                <Button onClick={handleClick} variant="contained" sx={{mt: 2}}>enviar</Button>
+                <Typography variant="h3">{email}</Typography>
+                <Typography variant="h3">{password}</Typography>
+            </Box>
+        </Container>
     )
 }
 

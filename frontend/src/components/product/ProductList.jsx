@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import ProductCard from "./ProductCard"
+import { Box, Container, Typography } from "@mui/material"
 
 const ProductList = () => {
     const [products, setProducts] = useState([])
@@ -14,8 +15,14 @@ const ProductList = () => {
     }, [])
 
     return (
-    <>
-        <h1>Lista de productos:</h1>
+    <Container>
+        <Typography variant="h3">Lista de productos:</Typography>
+        <Box sx={{
+        display: "flex",
+        flexDirection: {xs: "column", md: "row"},
+        justifyContent: "space-between",
+        gap: 4,
+        }}>
         {
             products.map((product) => (
                 <ProductCard 
@@ -29,7 +36,8 @@ const ProductList = () => {
                 />
             ))
         }
-    </>
+        </Box>
+    </Container>
     )
 }
 
