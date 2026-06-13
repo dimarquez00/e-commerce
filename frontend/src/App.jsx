@@ -1,11 +1,13 @@
 import './App.css'
-import ProductList from './components/ProductList'
+import LogIn from './components/authentication/LogIn'
+import ProductList from './components/product/ProductList'
 
 function App() {
 
   return (
     <>
-      <ProductList/>
+      {/* <ProductList/> */}
+      <LogIn/>
     </>
   )
 }
