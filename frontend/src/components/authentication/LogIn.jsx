@@ -33,7 +33,7 @@ const LogIn = () => {
             .then((response) => response.json())
             .then((data) => {
                 setToken(data.access_token)
-                localStorage.setItem(token, data.access_token)
+                localStorage.setItem("token", data.access_token)
             })
             .catch((error) => console.error("Error al iniciar sesión.", error))
     }
