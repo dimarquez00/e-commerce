@@ -51,8 +51,6 @@ const LogIn = () => {
                 <TextField name="email" onChange={handleChangeEmail} variant="outlined" label="email"></TextField>
                 <TextField name="password" onChange={handleChangePassword} variant="outlined" label="password"></TextField>
                 <Button onClick={handleClick} variant="contained" sx={{mt: 2}}>enviar</Button>
-                <Typography variant="h3">{email}</Typography>
-                <Typography variant="h3">{password}</Typography>
             </Box>
         </Container>
     )
