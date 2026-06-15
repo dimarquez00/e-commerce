@@ -14,6 +14,7 @@ import com.uade.tpo.e_commerce.model.User;
 import com.uade.tpo.e_commerce.model.dto.AddressDTO;
 import com.uade.tpo.e_commerce.model.dto.UserDTO;
 import com.uade.tpo.e_commerce.repository.UserRepository;
+import com.uade.tpo.e_commerce.security.JwtUtil;
 
 @Service
 @Transactional
@@ -32,6 +33,12 @@ public class UserService {
         }
 
         return dtoList;
+    }
+
+    /**Devuelve un usuario por el email */
+    public UserDTO getCurrentUser(String email) {
+        User entity = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+        return entityToDto(entity);
     }
 
     // Obtiene un usuario por id o lanza UserNotFoundException.

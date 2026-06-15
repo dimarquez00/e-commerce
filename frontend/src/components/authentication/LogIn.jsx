@@ -1,44 +1,51 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material"
 import {useContext, useEffect, useState } from "react"
-import { TokenContext } from "../../context/ContextProvider"
+import { CurrentUserContext, TokenContext } from "../../context/ContextProvider"
 
 
 const LogIn = () => {
     const [token, setToken] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const {setTokenContext} = useContext(TokenContext)
+    const {tokenContext, setTokenContext} = useContext(TokenContext)
+    const {setCurrentUser} = useContext(CurrentUserContext)
 
     const handleChangeEmail = (e) => setEmail(e.target.value)
     const handleChangePassword = (e) => setPassword(e.target.value)
 
-    const URL = "/api/auth/login"
-
-    const handleClick = () => {
+    const handleClick = async () => {
         if (email.trim() === "" || password.trim() === "") {
-            alert("No pueden haber campos vaicos")
-            return
+            alert("No pueden haber campos vacíos");
+            return;
         }
 
-        const data = {
-                    "email": email,
-                    "password": password
-        }
+        try {
+            const loginRes = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
 
-        fetch(URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                setToken(data.access_token)
-                setTokenContext(data.access_token)
-            })
-            .catch((error) => console.error("Error al iniciar sesión.", error))
-    }
+            const loginData = await loginRes.json();
+            const token = loginData.access_token;
+
+            setToken(token);
+            setTokenContext(token);
+
+            const userRes = await fetch("/api/users/me", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const userData = await userRes.json();
+            console.log(userData);
+            setCurrentUser(userData);
+
+        } catch (error) {
+            console.error("Error al iniciar sesión o cargar usuario.", error);
+        }
+    };
 
     return (
         <Container>

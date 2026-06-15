@@ -2,14 +2,14 @@ import { createContext, useState } from "react";
 
 export const TokenContext = createContext("")
 
-export const CurrentUserContext = createContext(null)
+export const CurrentUserContext = createContext({})
 
 export const CartContext = createContext({})
 
 export function ContextProvider({children}) {
     const [tokenContext, setTokenContext] = useState("")
 
-    const [currentUser, setCurrentUser] = useState(null)
+    const [currentUser, setCurrentUser] = useState({})
 
     const [cart, setCart] = useState({})
 

@@ -7,6 +7,10 @@ const CartList = () => {
     const {cart, setCart} = useContext(CartContext)
     console.log(cart)
 
+    const handleOrder = () => {
+        
+    }
+
     return (
         <Container>
             <Typography variant="h3">Carrito:</Typography>
@@ -24,7 +28,7 @@ const CartList = () => {
                 ))}
             </Box>
             {/* <Typography>{Object.keys(cart).length}</Typography> */}
-            <Button variant="contained" sx={{mt: 2}}>Finalizar compra</Button>
+            <Button onClick={handleOrder} variant="contained" sx={{mt: 2}}>Finalizar compra</Button>
         </Container>
     )
 }

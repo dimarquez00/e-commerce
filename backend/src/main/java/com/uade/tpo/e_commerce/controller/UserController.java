@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,18 +28,25 @@ public class UserController {
         return ResponseEntity.ok(userService.getUsers());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getCurrentUser(Authentication authentication) {
+        String email = authentication.getName();
+        return ResponseEntity.ok(userService.getCurrentUser(email));
+    }
+    
+
+    @GetMapping("/id/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/id/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userRequest) {
         UserDTO result = userService.updateUser(userRequest, id);
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/id/{id}")
     public ResponseEntity<UserDTO> deleteUser(@PathVariable Long id) {
         UserDTO result = userService.deleteUser(id);
         return ResponseEntity.ok(result);
