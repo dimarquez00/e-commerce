@@ -15,22 +15,22 @@ const ProductCard = ({id, name, description, price, stock, categories, image}) =
         }))
     }
 
-    const handleRemoveCart = () => {
-        setCart((prevCart) => {
-            const newCart = {...prevCart}
+    // const handleRemoveCart = () => {
+    //     setCart((prevCart) => {
+    //         const newCart = {...prevCart}
 
-            if (!newCart[id]) {
-                return prevCart;
-            }
+    //         if (!newCart[id]) {
+    //             return prevCart;
+    //         }
 
-            if (newCart[id] === 1) {
-                delete newCart[id]
-            } else {
-                newCart[id]--
-            }
-            return newCart
-        })
-    }
+    //         if (newCart[id] === 1) {
+    //             delete newCart[id]
+    //         } else {
+    //             newCart[id]--
+    //         }
+    //         return newCart
+    //     })
+    // }
 
     return (
     <Card elevation={3} sx={{width: {xs: 1, lg: 350}}}>
