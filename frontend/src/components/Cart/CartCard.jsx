@@ -12,7 +12,6 @@ const CartCard = ({id, quantityProp}) => {
     
     
     useEffect(() => {
-        console.log(tokenContext)
         fetch(URL, {
             headers: {
                 Authorization: `Bearer ${tokenContext}`,
@@ -54,7 +53,7 @@ const CartCard = ({id, quantityProp}) => {
       </CardContent>
 
       <CardActions>
-        <NumberSpinner value={quantity} onValueChange={setQuantity} label="Cantidad" size="small" />
+        <NumberSpinner value={quantity} onValueChange={setQuantity} min={1} label="Cantidad" size="small" />
         {/* <Button onClick={handleCarrito} variant="contained" sx={{mt: 2}}>
           Agregar al carrito
         </Button> */}

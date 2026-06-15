@@ -57,7 +57,7 @@ const ProductCard = ({id, name, description, price, stock, categories, image}) =
       </CardContent>
 
       <CardActions>
-        <NumberSpinner value={quantity} onValueChange={setQuantity} label="Cantidad" size="small" />
+        <NumberSpinner value={quantity} onValueChange={setQuantity} min={1} label="Cantidad" size="small" />
         <Button onClick={handleAddCart} variant="contained" sx={{mt: 2, width: 150}}>
           Agregar al carrito
         </Button>
