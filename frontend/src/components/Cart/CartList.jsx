@@ -1,14 +1,10 @@
 import { Box, Button, Container, Typography } from "@mui/material"
 import CartCard from "./CartCard"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { CartContext } from "../../context/ContextProvider"
 
 const CartList = () => {
-    // const [cart, setCart] = useState({})
-    // useEffect(()=>{
-    //     const cartBefore = JSON.parse(localStorage.getItem("cart")) || []
-    //     setCart(cartBefore)
-    // }, [])
-    const cart = JSON.parse(localStorage.getItem("cart")) || []
+    const {cart, setCart} = useContext(CartContext)
     console.log(cart)
 
     return (
@@ -19,17 +15,15 @@ const CartList = () => {
             flexDirection: "column",
             gap: 4,
             }}>
-            {
-                cart.map((product) => (
-                    <CartCard 
-                    key={product.id}
-                    id={product.id}
-                    quantityProp={product.quantity}
+                {Object.entries(cart).map(([id, quantity]) => (
+                    <CartCard
+                        key={id}
+                        id={id}
+                        quantityProp={quantity}
                     />
-                ))
-            }
+                ))}
             </Box>
-            {/* <Typography>{cart}</Typography> */}
+            {/* <Typography>{Object.keys(cart).length}</Typography> */}
             <Button variant="contained" sx={{mt: 2}}>Finalizar compra</Button>
         </Container>
     )

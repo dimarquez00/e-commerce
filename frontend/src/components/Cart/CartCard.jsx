@@ -1,20 +1,21 @@
 import { Card, CardActions, CardContent, Container, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import NumberSpinner from "../NumberSpinner"
+import { TokenContext } from "../../context/ContextProvider"
 
 const CartCard = ({id, quantityProp}) => {
     const [product, setProduct] = useState({})
     const [quantity, setQuantity] = useState(quantityProp)
 
+    const {tokenContext} = useContext(TokenContext)
     const URL = `/api/products/${id}`
     
     
     useEffect(() => {
-        const token = localStorage.getItem("token")
-        console.log(token)
+        console.log(tokenContext)
         fetch(URL, {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${tokenContext}`,
             },
         })
             .then((response) => response.json())

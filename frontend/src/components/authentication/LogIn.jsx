@@ -1,11 +1,13 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material"
-import {useEffect, useState } from "react"
+import {useContext, useEffect, useState } from "react"
+import { TokenContext } from "../../context/ContextProvider"
 
 
 const LogIn = () => {
     const [token, setToken] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const {setTokenContext} = useContext(TokenContext)
 
     const handleChangeEmail = (e) => setEmail(e.target.value)
     const handleChangePassword = (e) => setPassword(e.target.value)
@@ -33,7 +35,7 @@ const LogIn = () => {
             .then((response) => response.json())
             .then((data) => {
                 setToken(data.access_token)
-                localStorage.setItem("token", data.access_token)
+                setTokenContext(data.access_token)
             })
             .catch((error) => console.error("Error al iniciar sesión.", error))
     }

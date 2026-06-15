@@ -1,41 +1,35 @@
 import { Card, CardContent, Typography, Button, CardActions, Chip, CardMedia} from "@mui/material"
 import img from "../../assets/emptyImg.png"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import NumberSpinner from "../NumberSpinner"
+import { CartContext } from "../../context/ContextProvider"
 
 const ProductCard = ({id, name, description, price, stock, categories, image}) => {
     const [quantity, setQuantity] = useState(1)
+    const {cart, setCart} = useContext(CartContext)
 
     const handleAddCart = () => {
-        const cart = JSON.parse(localStorage.getItem("cart")) || []
-        const existingProduct = cart.find(
-            (item) => item.id === id
-        )
-
-        if (existingProduct) {
-            existingProduct.quantity += quantity
-        } else {
-            cart.push({
-                id: id,
-                quantity: quantity
-            })
-        }
-
-        localStorage.setItem("cart", JSON.stringify(cart))
+        setCart((prevCart) => ({
+            ...prevCart,
+            [id]: (prevCart[id] || 0) + quantity
+        }))
     }
 
     const handleRemoveCart = () => {
-        let cart = JSON.parse(localStorage.getItem("cart")) || []
+        setCart((prevCart) => {
+            const newCart = {...prevCart}
 
-        cart = cart
-            .map((item) =>
-            item.id === id
-                ? {...item, quantity: item.quantity - 1}
-                : item
-            )
-            .filter((item) => item.quantity > 0)
-        
-        localStorage.setItem("cart", JSON.stringify(cart))
+            if (!newCart[id]) {
+                return prevCart;
+            }
+
+            if (newCart[id] === 1) {
+                delete newCart[id]
+            } else {
+                newCart[id]--
+            }
+            return newCart
+        })
     }
 
     return (
