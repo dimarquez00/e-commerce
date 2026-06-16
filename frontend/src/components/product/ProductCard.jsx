@@ -2,11 +2,14 @@ import { Card, CardContent, Typography, Button, CardActions, Chip, CardMedia} fr
 import img from "../../assets/emptyImg.png"
 import { useContext, useState } from "react"
 import NumberSpinner from "../NumberSpinner"
-import { CartContext } from "../../context/ContextProvider"
+import { CartContext, CategoryContext } from "../../context/ContextProvider"
 
-const ProductCard = ({id, name, description, price, stock, categories, image}) => {
+const ProductCard = ({product}) => {
+    const { id, name, description, price, stock, categories, image } = product
+
     const [quantity, setQuantity] = useState(1)
     const {cart, setCart} = useContext(CartContext)
+    const {categories: categoriesMap} = useContext(CategoryContext)
 
     const handleAddCart = () => {
         setCart((prevCart) => ({
@@ -15,25 +18,14 @@ const ProductCard = ({id, name, description, price, stock, categories, image}) =
         }))
     }
 
-    // const handleRemoveCart = () => {
-    //     setCart((prevCart) => {
-    //         const newCart = {...prevCart}
-
-    //         if (!newCart[id]) {
-    //             return prevCart;
-    //         }
-
-    //         if (newCart[id] === 1) {
-    //             delete newCart[id]
-    //         } else {
-    //             newCart[id]--
-    //         }
-    //         return newCart
-    //     })
-    // }
-
     return (
-    <Card elevation={3} sx={{width: {xs: 1, lg: 350}}}>
+    <Card 
+        elevation={3}
+        sx={{
+            flex: "1 1 300",
+            maxWidth: 350
+        }}
+    >
         <CardMedia
             component="img"
             height="300"
@@ -51,14 +43,32 @@ const ProductCard = ({id, name, description, price, stock, categories, image}) =
 
             <Typography sx={{ mt: 2 }}>Categorías:</Typography>
 
-            <Chip label={categories} size="small" sx={{ mr: 1, mt: 1 }}/>
-            {/* {product.categories.map((categoryId) => (
-            ))} */}
+            {/* <Chip label={categories} size="small" sx={{ mr: 1, mt: 1 }}/> */}
+            {categories?.map((categoryId) => (
+                <Chip
+                    key={categoryId}
+                    label={categoriesMap?.[categoryId]}
+                    size="small"
+                    sx={{ mr: 1, mt: 1 }}
+                />
+            ))}
       </CardContent>
 
       <CardActions>
-        <NumberSpinner value={quantity} onValueChange={setQuantity} min={1} label="Cantidad" size="small" />
-        <Button onClick={handleAddCart} variant="contained" sx={{mt: 2, width: 150}}>
+        <NumberSpinner 
+            value={quantity}
+            onValueChange={setQuantity}
+            min={1}
+            max={stock}
+            label="Cantidad"
+            size="small"
+        />
+        <Button 
+            onClick={handleAddCart}
+            variant="contained"
+            disabled={stock === 0}
+            sx={{mt: 2, width: 150}}
+        >
           Agregar al carrito
         </Button>
       </CardActions>

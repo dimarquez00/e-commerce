@@ -1,38 +1,78 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import ProductCard from "./ProductCard"
-import { Box, Container, Typography } from "@mui/material"
+import { Box, CircularProgress, Container, Typography } from "@mui/material"
+import { CategoryContext } from "../../context/ContextProvider"
 
 const ProductList = () => {
-    const [products, setProducts] = useState([])
+    const {setCategories} = useContext(CategoryContext)
 
-    const URL = "/api/products"
+    const [products, setProducts] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
-        fetch(URL)
-            .then((response) => response.json())
-            .then((data) => setProducts(data))
-            .catch((error) => console.error("Error al cargar los productos.", error))
-    }, [])
+        const loadData = async () => {
+            try {
+                const [productsResponse, categoriesResponse] = await Promise.all([
+                    fetch("/api/products"),
+                    fetch("/api/categories")
+                ])
+
+                if (!productsResponse.ok || !categoriesResponse.ok) {
+                    throw new Error("Error al obtener datos del servidor")
+                }
+
+                const productsData = await productsResponse.json()
+                const categoriesData = await categoriesResponse.json()
+
+                const categoriesMap = Object.fromEntries(
+                    categoriesData.map(category => [category.id, category.name])
+                )
+
+                setProducts(productsData)
+                setCategories(categoriesMap)
+
+            } catch (error) {
+                setError(error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        loadData()
+    }, [setCategories])
+
+    if (loading) 
+        return (
+        <Box
+            sx={{
+                display: "flex",
+                justifyContent: "center",
+                mt: 4
+            }}
+        >
+            <CircularProgress />
+        </Box>
+    )
+
+    if (error) return <Typography color="error">{error}</Typography>
 
     return (
     <Container>
         <Typography variant="h3">Lista de productos:</Typography>
-        <Box sx={{
-        display: "flex",
-        flexDirection: {xs: "column", md: "row"},
-        justifyContent: "space-between",
-        gap: 4,
-        }}>
+        <Box 
+            sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                gap: 4
+            }}
+        >
         {
             products.map((product) => (
                 <ProductCard 
                 key={product.id}
-                id={product.id}
-                name={product.name}
-                description={product.description}
-                price={product.price}
-                stock={product.stock}
-                categories={product.categories}
+                product={product}
                 />
             ))
         }

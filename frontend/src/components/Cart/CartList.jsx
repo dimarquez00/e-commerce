@@ -20,8 +20,9 @@ const CartList = () => {
     const navigate = useNavigate()
 
     console.log(cart)
-    const userId = currentUser.id
+    const userId = currentUser?.id
 
+    const isLoggedIn = !!tokenContext;
     const isCartEmpty = Object.keys(cart).length === 0;
 
     const handleOrder = async () => {
@@ -136,21 +137,19 @@ const CartList = () => {
             <Button 
                 onClick={handleOrder}
                 variant="contained"
-                disabled={loading || isCartEmpty}
+                disabled={loading || isCartEmpty || !isLoggedIn}
                 sx={{mt: 2}}
             >
                 {loading ? (
                     <CircularProgress size={24} />
+                ) : !isLoggedIn ? (
+                    "Inicia sesión para comprar"
+                ) : isCartEmpty ? (
+                    "Carrito vacío"
                 ) : (
-                    isCartEmpty ? "Carrito vacío" : "Confirmar pedido"
+                    "Confirmar pedido"
                 )}
             </Button>
-
-            {/* {!loading && confirmedOrder && (
-                
-                // setConfirmedOrder(null)
-                // Navigate("/confirmedorder")
-            )} */}
         </Container>
     )
 }

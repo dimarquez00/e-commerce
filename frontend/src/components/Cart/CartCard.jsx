@@ -15,11 +15,7 @@ const CartCard = ({id, quantityProp}) => {
     
     
     useEffect(() => {
-        fetch(URL, {
-            headers: {
-                Authorization: `Bearer ${tokenContext}`,
-            },
-        })
+        fetch(URL)
             .then((response) => response.json())
             .then((data) => {
                 setProduct(data),
