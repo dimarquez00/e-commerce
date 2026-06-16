@@ -5,20 +5,29 @@ import IconButton from "@mui/material/IconButton";
 import CartCard from "./CartCard"
 import { useContext, useEffect, useState } from "react"
 import { CartContext, CurrentUserContext, TokenContext } from "../../context/ContextProvider"
+import ConfirmedOrder from "../ConfirmedOrder";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const CartList = () => {
     const {cart, setCart} = useContext(CartContext)
     const {tokenContext} = useContext(TokenContext)
     const {currentUser} = useContext(CurrentUserContext)
 
-    const [confirmedOrder, setConfirmedOrder] = useState(null)
+    // const [confirmedOrder, setConfirmedOrder] = useState(null)
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
+
+    const navigate = useNavigate()
 
     console.log(cart)
     const userId = currentUser.id
 
+    const isCartEmpty = Object.keys(cart).length === 0;
+
     const handleOrder = async () => {
+        if (cart === {}) {
+            return
+        }
         setLoading(true);
         try {
             // 1. Crear orden
@@ -82,7 +91,6 @@ const CartList = () => {
             }
 
             const orderData = await confirmResponse.json();
-            setConfirmedOrder(orderData);
 
             // 4. Mostrar confirmación
             console.log(orderData);
@@ -91,6 +99,13 @@ const CartList = () => {
             // 5. Vaciar carrito
             setCart({});
             setSuccess(true);
+
+            // 6. Ir a view de confirmación de pedido
+            navigate("/confirmedorder", {
+                state: {
+                    order: orderData
+                }
+            })
 
         } catch (error) {
             console.error(error);
@@ -121,141 +136,21 @@ const CartList = () => {
             <Button 
                 onClick={handleOrder}
                 variant="contained"
-                disabled={loading}
+                disabled={loading || isCartEmpty}
                 sx={{mt: 2}}
             >
                 {loading ? (
                     <CircularProgress size={24} />
                 ) : (
-                    "Confirmar pedido"
+                    isCartEmpty ? "Carrito vacío" : "Confirmar pedido"
                 )}
             </Button>
 
-            {!loading && confirmedOrder && (
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        mt: 4
-                    }}
-                >
-                    <Card
-                        elevation={4}
-                        sx={{
-                            width: {
-                                xs: "100%",
-                                sm: 500
-                            },
-                            textAlign: "center",
-                            p: 2
-                        }}
-                    >
-                        <CardContent>
-
-                            <CheckCircleIcon
-                                color="success"
-                                sx={{
-                                    fontSize: 80,
-                                    mb: 2
-                                }}
-                            />
-
-                            <Typography
-                                variant="h4"
-                                gutterBottom
-                            >
-                                ¡Pedido confirmado!
-                            </Typography>
-
-                            <Typography
-                                color="text.secondary"
-                                sx={{ mb: 3 }}
-                            >
-                                Gracias por tu compra.
-                            </Typography>
-
-                            <Divider sx={{ mb: 3 }} />
-
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    mb: 2
-                                }}
-                            >
-                                <Typography>
-                                    <strong>Pedido</strong>
-                                </Typography>
-
-                                <Typography>
-                                    #{confirmedOrder.id}
-                                </Typography>
-                            </Box>
-
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    mb: 2
-                                }}
-                            >
-                                <Typography>
-                                    <strong>Fecha</strong>
-                                </Typography>
-
-                                <Typography>
-                                    {confirmedOrder.date}
-                                </Typography>
-                            </Box>
-
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    mb: 2
-                                }}
-                            >
-                                <Typography>
-                                    <strong>Productos</strong>
-                                </Typography>
-
-                                <Typography>
-                                    {confirmedOrder.products.length}
-                                </Typography>
-                            </Box>
-
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    mb: 2
-                                }}
-                            >
-                                <Typography>
-                                    <strong>Total</strong>
-                                </Typography>
-
-                                <Typography
-                                    variant="h6"
-                                    color="primary"
-                                >
-                                    ${confirmedOrder.total}
-                                </Typography>
-                            </Box>
-
-                            <Divider sx={{ my: 2 }} />
-
-                            <Button
-                                variant="contained"
-                                sx={{ mt: 3 }}
-                                onClick={() => setConfirmedOrder(null)}
-                            >
-                                Continuar comprando
-                            </Button>
-                        </CardContent>
-                    </Card>
-                </Box>
-            )}
+            {/* {!loading && confirmedOrder && (
+                
+                // setConfirmedOrder(null)
+                // Navigate("/confirmedorder")
+            )} */}
         </Container>
     )
 }
