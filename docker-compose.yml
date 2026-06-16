@@ -1,3 +1,6 @@
+### Levantar contenedores usar: 
+### docker-compose up -d --build
+### Ingresar a frontend: http://localhost
 services:
   mysql-db:
     image: mysql:8.0
@@ -18,17 +21,29 @@ services:
       start_period: 15s
 
   backend:
-    build: .
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: e-commerce-backend
     restart: unless-stopped
     ports:
       - "8080:8080"
     environment:
-      # Sobreescribir la URL de la base de datos para que use el contenedor mysql-db y no localhost.
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/e-commerce?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     depends_on:
       mysql-db:
         condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: e-commerce-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
 
 volumes:
   mysql_data:
