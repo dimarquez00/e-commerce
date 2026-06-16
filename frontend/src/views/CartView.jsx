@@ -1,5 +1,5 @@
 import { Container, Typography } from '@mui/material'
-import CartList from '../components/cart/CartList'
+import CartList from '../components/Cart/CartList'
 
 const CartView = () => {
 
