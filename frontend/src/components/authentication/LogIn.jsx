@@ -1,14 +1,18 @@
-import { Box, Button, Container, TextField } from "@mui/material"
+import { Box, Button, Container, IconButton, InputAdornment, TextField, Typography } from "@mui/material"
+import Visibility from "@mui/icons-material/Visibility"
+import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import {useContext, useState } from "react"
 import { CurrentUserContext, TokenContext } from "../../context/ContextProvider"
 
 
 const LogIn = () => {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
     const {setTokenContext} = useContext(TokenContext)
     const {setCurrentUser} = useContext(CurrentUserContext)
 
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [showPassword, setShowPassword] = useState(false)
+    
     const handleChangeEmail = (e) => setEmail(e.target.value)
     const handleChangePassword = (e) => setPassword(e.target.value)
 
@@ -54,19 +58,54 @@ const LogIn = () => {
     };
 
     return (
-        <Container>
+        <Container maxWidth="sm">
             <Box sx={{
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "space-between",
-                gap: 3,
-                width: 400,
+                gap: 2,
                 m: 4,
                 }}
             >
-                <TextField name="email" onChange={handleChangeEmail} variant="outlined" label="email" />
-                <TextField name="password" onChange={handleChangePassword} variant="outlined" label="password" />
-                <Button onClick={handleClick} variant="contained" sx={{mt: 2}}>enviar</Button>
+                <Typography variant="h4">
+                    Inicio de sesión
+                </Typography>
+
+                <TextField 
+                    label="Email"
+                    name="email"
+                    value={email}
+                    onChange={handleChangeEmail}
+                />
+
+                <TextField 
+                    label="Contraseña" 
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={handleChangePassword}
+                    slotProps={{
+                        input: {
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={() => setShowPassword(prev => !prev)}
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        },
+                    }}
+                />
+
+                <Button 
+                    variant="contained"
+                    onClick={handleClick}
+                >
+                    Iniciar sesión
+                </Button>
             </Box>
         </Container>
     )

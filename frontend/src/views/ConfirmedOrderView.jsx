@@ -1,5 +1,5 @@
 import { Container, Typography } from "@mui/material"
-import ConfirmedOrder from "../components/Cart/ConfirmedOrder"
+import ConfirmedOrder from "../components/cart/ConfirmedOrder"
 
 const ConfirmedOrderView = () => {
 
