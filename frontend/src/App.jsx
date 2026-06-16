@@ -12,6 +12,7 @@ import AdminView from './views/AdminView.jsx'
 import CartView from './views/CartView.jsx'
 import { ContextProvider } from './context/ContextProvider.jsx'
 import ConfirmedOrderView from './views/ConfirmedOrderView.jsx'
+import RegisterView from './views/RegisterView.jsx'
 
 function App() {
     const navigate = useNavigate()
@@ -32,6 +33,7 @@ function App() {
                     <Route path='/admin' element={<AdminView/>}/>
                     <Route path='/cart' element={<CartView/>}/>
                     <Route path='/confirmedorder' element={<ConfirmedOrderView/>}/>
+                    <Route path='/register' element={<RegisterView/>}/>
                 </Routes>
             </Container>
         </ContextProvider>

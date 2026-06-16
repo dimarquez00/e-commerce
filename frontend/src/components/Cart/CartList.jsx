@@ -5,7 +5,7 @@ import IconButton from "@mui/material/IconButton";
 import CartCard from "./CartCard"
 import { useContext, useEffect, useState } from "react"
 import { CartContext, CurrentUserContext, TokenContext } from "../../context/ContextProvider"
-import ConfirmedOrder from "../ConfirmedOrder";
+import ConfirmedOrder from "../cart/ConfirmedOrder";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const CartList = () => {

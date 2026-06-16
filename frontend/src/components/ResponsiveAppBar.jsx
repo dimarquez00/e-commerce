@@ -16,10 +16,11 @@ import { useNavigate } from 'react-router-dom';
 
 const pages = [
     { label: 'Products', path: '/products' },
-    { label: 'LogIn', path: '/login' },
     { label: 'Profile', path: '/profile' },
     { label: 'Admin', path: '/admin' },
     { label: 'Carrito', path: '/cart' },
+    { label: 'LogIn', path: '/login' },
+    { label: 'Register', path: '/register' },
 ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 

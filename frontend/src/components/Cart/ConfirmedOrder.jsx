@@ -1,7 +1,6 @@
 import { Box, Button, Card, CardContent, Divider, Typography } from "@mui/material"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useContext, useEffect, useState } from "react";
-import { TokenContext } from "../context/ContextProvider";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const ConfirmedOrder = () => {
@@ -13,8 +12,6 @@ const ConfirmedOrder = () => {
     if (!order) {
         return <Typography variant="h4">No se encontró la orden.</Typography>
     }
-    
-    
 
     return (
         <Box

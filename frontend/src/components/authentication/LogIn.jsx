@@ -1,13 +1,12 @@
-import { Box, Button, Container, TextField, Typography } from "@mui/material"
-import {useContext, useEffect, useState } from "react"
+import { Box, Button, Container, TextField } from "@mui/material"
+import {useContext, useState } from "react"
 import { CurrentUserContext, TokenContext } from "../../context/ContextProvider"
 
 
 const LogIn = () => {
-    const [token, setToken] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const {tokenContext, setTokenContext} = useContext(TokenContext)
+    const {setTokenContext} = useContext(TokenContext)
     const {setCurrentUser} = useContext(CurrentUserContext)
 
     const handleChangeEmail = (e) => setEmail(e.target.value)
@@ -26,17 +25,24 @@ const LogIn = () => {
                 body: JSON.stringify({ email, password })
             });
 
-            const loginData = await loginRes.json();
-            const token = loginData.access_token;
+            if (!loginRes.ok) {
+                throw new Error("Credenciales inválidas")
+            }
 
-            setToken(token);
-            setTokenContext(token);
+            const loginData = await loginRes.json();
+            const accessToken = loginData.access_token;
+
+            setTokenContext(accessToken);
 
             const userRes = await fetch("/api/users/me", {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${accessToken}`,
                 },
             });
+
+            if (!userRes.ok) {
+                throw new Error("No se pudo obtener el usuario")
+            }
 
             const userData = await userRes.json();
             console.log(userData);
@@ -56,9 +62,10 @@ const LogIn = () => {
                 gap: 3,
                 width: 400,
                 m: 4,
-                }}>
-                <TextField name="email" onChange={handleChangeEmail} variant="outlined" label="email"></TextField>
-                <TextField name="password" onChange={handleChangePassword} variant="outlined" label="password"></TextField>
+                }}
+            >
+                <TextField name="email" onChange={handleChangeEmail} variant="outlined" label="email" />
+                <TextField name="password" onChange={handleChangePassword} variant="outlined" label="password" />
                 <Button onClick={handleClick} variant="contained" sx={{mt: 2}}>enviar</Button>
             </Box>
         </Container>
