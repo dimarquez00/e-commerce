@@ -12,23 +12,32 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import Badge from '@mui/material/Badge';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
+import { CartContext } from '../context/ContextProvider';
 
 const pages = [
     { label: 'Products', path: '/products' },
     { label: 'Profile', path: '/profile' },
     { label: 'Admin', path: '/admin' },
-    { label: 'Carrito', path: '/cart' },
+    // { label: 'Carrito', path: '/cart' },
     { label: 'LogIn', path: '/login' },
     { label: 'Register', path: '/register' },
 ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const ResponsiveAppBar = () => {
+    const {cart} = React.useContext(CartContext)
     const navigate = useNavigate();
 
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+    const totalItems = Object.values(cart).reduce(
+        (total, quantity) => total + quantity,
+        0
+    );
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -53,7 +62,10 @@ const ResponsiveAppBar = () => {
     };
 
     return (
-        <AppBar position="static">
+        <AppBar 
+            position="static"
+            sx={{ mb: 4}}
+        >
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -168,6 +180,16 @@ const ResponsiveAppBar = () => {
                             ))}
                         </Menu>
                     </Box> */}
+
+                    <IconButton
+                        color="inherit"
+                        aria-label="view cart"
+                        onClick={() => navigate("/cart")}
+                    >
+                        <Badge badgeContent={totalItems} color="secondary">
+                            <ShoppingCartIcon />
+                        </Badge>
+                    </IconButton>
                 </Toolbar>
             </Container>
         </AppBar>

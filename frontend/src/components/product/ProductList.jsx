@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import ProductCard from "./ProductCard"
 import { Box, CircularProgress, Container, Typography } from "@mui/material"
 import { CategoryContext } from "../../context/ContextProvider"
+import ProductFilter from "./ProductFilter"
 
 const ProductList = () => {
     const {setCategories} = useContext(CategoryContext)
@@ -9,6 +10,24 @@ const ProductList = () => {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+
+    const [selectedCategories, setSelectedCategories] = useState([])
+    const [sortOrder, setSortOrder] = useState("asc")
+
+    const filteredProducts =
+        selectedCategories.length === 0
+            ? products
+            : products.filter((product) =>
+                product.categories.some((categoryId) =>
+                    selectedCategories.includes(categoryId)
+                )
+            );
+    
+    const sortedProducts = [...filteredProducts].sort((a, b) =>
+        sortOrder === "asc"
+            ? a.price - b.price
+            : b.price - a.price
+    );
 
     useEffect(() => {
         const loadData = async () => {
@@ -59,7 +78,13 @@ const ProductList = () => {
 
     return (
     <Container>
-        <Typography variant="h3">Lista de productos:</Typography>
+        <ProductFilter
+            selectedCategories={selectedCategories}
+            setSelectedCategories={setSelectedCategories}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+        />
+
         <Box 
             sx={{
                 display: "flex",
@@ -69,10 +94,10 @@ const ProductList = () => {
             }}
         >
         {
-            products.map((product) => (
+            sortedProducts.map((product) => (
                 <ProductCard 
-                key={product.id}
-                product={product}
+                    key={product.id}
+                    product={product}
                 />
             ))
         }
