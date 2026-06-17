@@ -15,20 +15,23 @@ import AdbIcon from '@mui/icons-material/Adb';
 import Badge from '@mui/material/Badge';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
-import { CartContext } from '../context/ContextProvider';
+import { CartContext, CurrentUserContext, TokenContext } from '../context/ContextProvider';
 
 const pages = [
     { label: 'Products', path: '/products' },
-    { label: 'Profile', path: '/profile' },
+    // { label: 'Profile', path: '/profile' },
     { label: 'Admin', path: '/admin' },
     // { label: 'Carrito', path: '/cart' },
-    { label: 'LogIn', path: '/login' },
-    { label: 'Register', path: '/register' },
+    // { label: 'LogIn', path: '/login' },
+    // { label: 'Register', path: '/register' },
 ];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+// const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
 
 const ResponsiveAppBar = () => {
     const {cart} = React.useContext(CartContext)
+    const {currentUser, setCurrentUser} = React.useContext(CurrentUserContext)
+    const {setTokenContext} = React.useContext(TokenContext)
     const navigate = useNavigate();
 
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -38,6 +41,27 @@ const ResponsiveAppBar = () => {
         (total, quantity) => total + quantity,
         0
     );
+
+    const isLoggedIn = !!currentUser;
+
+    const settings = isLoggedIn
+    ? [
+        { label: "Profile", path: "/profile" },
+        { label: "Logout", action: "logout" }
+    ]
+    : [
+        { label: "LogIn", path: "/login" },
+        { label: "Register", path: "/register" }
+    ];
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+
+        setTokenContext(null);
+        setCurrentUser(null);
+
+        navigate("/products");
+    };
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -151,12 +175,26 @@ const ResponsiveAppBar = () => {
                         </Button>
                         ))}
                     </Box>
-                    {/* <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
+
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Tooltip title="Cuenta">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                <Avatar>
+                                    {isLoggedIn ? currentUser?.name?.[0] : "?"}
+                                </Avatar>
                             </IconButton>
                         </Tooltip>
+
+                        <IconButton
+                            color="inherit"
+                            aria-label="view cart"
+                            onClick={() => navigate("/cart")}
+                        >
+                            <Badge badgeContent={totalItems} color="secondary">
+                                <ShoppingCartIcon />
+                            </Badge>
+                        </IconButton>
+
                         <Menu
                             sx={{ mt: '45px' }}
                             id="menu-appbar"
@@ -173,23 +211,26 @@ const ResponsiveAppBar = () => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
+
                             {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                                <MenuItem
+                                    key={setting.label}
+                                    onClick={() => {
+                                        handleCloseUserMenu();
+
+                                        if (setting.action === "logout") {
+                                            handleLogout();
+                                        } else {
+                                            navigate(setting.path);
+                                        }
+                                    }}
+                                >
+                                    <Typography>{setting.label}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
-                    </Box> */}
+                    </Box>
 
-                    <IconButton
-                        color="inherit"
-                        aria-label="view cart"
-                        onClick={() => navigate("/cart")}
-                    >
-                        <Badge badgeContent={totalItems} color="secondary">
-                            <ShoppingCartIcon />
-                        </Badge>
-                    </IconButton>
                 </Toolbar>
             </Container>
         </AppBar>

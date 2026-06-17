@@ -142,10 +142,10 @@ const CartList = () => {
             >
                 {loading ? (
                     <CircularProgress size={24} />
-                ) : !isLoggedIn ? (
-                    "Inicia sesión para comprar"
                 ) : isCartEmpty ? (
                     "Carrito vacío"
+                ) : !isLoggedIn  ? (
+                    "Inicia sesión para comprar"
                 ) : (
                     "Confirmar pedido"
                 )}

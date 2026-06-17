@@ -11,7 +11,7 @@ export const CategoryContext = createContext([])
 export function ContextProvider({children}) {
     const [tokenContext, setTokenContext] = useState("")
 
-    const [currentUser, setCurrentUser] = useState({})
+    const [currentUser, setCurrentUser] = useState(null)
 
     const [cart, setCart] = useState({})
 
