@@ -81,6 +81,7 @@ public class UserService {
                 .name(entity.getName())
                 .dateOB(entity.getDateOB())
                 .email(entity.getEmail())
+                .role(entity.getRole().toString())
                 .address(adressEntityToDto(entity.getAddress()))
                 .build();
     }

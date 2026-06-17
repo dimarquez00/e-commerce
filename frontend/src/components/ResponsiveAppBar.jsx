@@ -55,8 +55,6 @@ const ResponsiveAppBar = () => {
     ];
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
-
         setTokenContext(null);
         setCurrentUser(null);
 
