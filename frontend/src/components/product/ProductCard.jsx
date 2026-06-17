@@ -3,6 +3,7 @@ import img from "../../assets/emptyImg.png"
 import { useContext, useState } from "react"
 import NumberSpinner from "../NumberSpinner"
 import { CartContext, CategoryContext } from "../../context/ContextProvider"
+import { NotificationContext } from "../../context/NotificationProvider"
 
 const ProductCard = ({product}) => {
     const { id, name, description, price, stock, categories, image } = product
@@ -10,12 +11,16 @@ const ProductCard = ({product}) => {
     const [quantity, setQuantity] = useState(1)
     const {cart, setCart} = useContext(CartContext)
     const {categories: categoriesMap} = useContext(CategoryContext)
+    const { showNotification } = useContext(NotificationContext)
 
     const handleAddCart = () => {
         setCart((prevCart) => ({
             ...prevCart,
             [id]: (prevCart[id] || 0) + quantity
         }))
+
+        showNotification("Producto agregado al carrito")
+
     }
 
     return (

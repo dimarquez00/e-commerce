@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { NotificationProvider } from "./NotificationProvider";
 
 export const TokenContext = createContext("")
 
@@ -18,34 +19,37 @@ export function ContextProvider({children}) {
     const [categories, setCategories] = useState([])
 
     return (
-        <TokenContext
-            value ={{
-                tokenContext,
-                setTokenContext
-            }}
-        >
-            <CartContext
-                value={{
-                    cart,
-                    setCart
+        <NotificationProvider>
+
+            <TokenContext
+                value ={{
+                    tokenContext,
+                    setTokenContext
                 }}
             >
-                <CurrentUserContext
+                <CartContext
                     value={{
-                        currentUser,
-                        setCurrentUser
+                        cart,
+                        setCart
                     }}
                 >
-                    <CategoryContext
+                    <CurrentUserContext
                         value={{
-                            categories,
-                            setCategories
+                            currentUser,
+                            setCurrentUser
                         }}
                     >
-                        {children}
-                    </CategoryContext>
-                </CurrentUserContext>
-            </CartContext>
-        </TokenContext>
+                        <CategoryContext
+                            value={{
+                                categories,
+                                setCategories
+                            }}
+                        >
+                            {children}
+                        </CategoryContext>
+                    </CurrentUserContext>
+                </CartContext>
+            </TokenContext>
+        </NotificationProvider>
     )
 }
