@@ -56,37 +56,77 @@ const AdminCategoryManager = ({
                 Categorías
             </Typography>
 
-            {Object.entries(categories).map(([id, name]) => (
-                <Box
-                    key={id}
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 1,
-                        mb: 1
-                    }}
-                >
-                    <Chip label={name} />
+            <Box
+                sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 2,
+                    mb: 3
+                }}
+            >
+                {Object.entries(categories).map(([id, name]) => {
 
-                    <IconButton
-                        size="small"
-                        onClick={() => {
-                            setEditingCategory(id)
-                            setEditingName(name)
-                        }}
-                    >
-                        <EditIcon />
-                    </IconButton>
+                    const usageCount = products.filter(product =>
+                        product.categories.includes(Number(id))
+                    ).length
 
-                    <IconButton
-                        size="small"
-                        color="error"
-                        onClick={() => handleOpenDelete(id, name)}
-                    >
-                        <DeleteIcon />
-                    </IconButton>
-                </Box>
-            ))}
+                    return (
+                        <Box
+                            key={id}
+                            onClick={() => {
+                                setEditingCategory(id)
+                                setEditingName(name)
+                            }}
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                border: 1,
+                                borderColor: "divider",
+                                borderRadius: 5,
+                                px: 1.5,
+                                py: 0.5,
+                                gap: 0.5,
+
+                                cursor: "pointer",
+
+                                transition: "all 0.2s ease",
+
+                                "&:hover": {
+                                    bgcolor: "action.hover",
+                                    borderColor: "primary.main"
+                                }
+                            }}
+                        >
+                            <Typography>
+                                {name} ({usageCount})
+                            </Typography>
+
+                            <IconButton 
+                                size="small"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+
+                                    setEditingCategory(id)
+                                    setEditingName(name)
+                                }}
+                            >
+                                <EditIcon fontSize="small" />
+                            </IconButton>
+
+                            <IconButton 
+                                size="small"
+                                color="error"
+                                onClick={(e) =>  {
+                                    e.stopPropagation()
+                                    handleOpenDelete(id, name)
+                                }}
+                            >
+                                <DeleteIcon fontSize="small" />
+                            </IconButton>
+                        </Box>
+                    )
+                })}
+            </Box>
 
             <Box
                 sx={{
