@@ -1,4 +1,4 @@
-import { Box, Button, Container, IconButton, InputAdornment, TextField, Typography } from "@mui/material"
+import { Alert, Box, Button, Container, IconButton, InputAdornment, TextField, Typography } from "@mui/material"
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { useContext, useEffect, useState } from "react"
@@ -9,6 +9,8 @@ const Profile = () => {
     const {currentUser, setCurrentUser} = useContext(CurrentUserContext)
     
     const [showPassword, setShowPassword] = useState(false)
+    const [successMessage, setSuccessMessage] = useState("")
+    const [errorMessage, setErrorMessage] = useState("")
     const [formData, setFormData] = useState({
         name: "",
         dateOB: "",
@@ -59,6 +61,9 @@ const Profile = () => {
     }
     
     const handleUpdatedProfile = async () => {
+        setSuccessMessage("")
+        setErrorMessage("")
+
         if (
             formData.name.trim() === "" ||
             formData.dateOB.trim() === "" ||
@@ -68,7 +73,7 @@ const Profile = () => {
             formData.address.province.trim() === "" ||
             formData.address.postalCode.trim() === ""
         ) {
-            alert("Todos los campos son obligatorios")
+            setErrorMessage("Todos los campos son obligatorios")
             return
         }
 
@@ -103,12 +108,12 @@ const Profile = () => {
 
             const updatedUser = await response.json()
 
-            console.log(updatedUser);
-            setCurrentUser(updatedUser);
+            setCurrentUser(updatedUser)
+            setSuccessMessage("¡Perfil actualizado correctamente!")
 
         } catch (error) {
             console.error(error)
-            alert("Ocurrió un error al actualizar el perfil")
+            setErrorMessage("Ocurrió un error al actualizar el perfil")
         }
     }
 
@@ -126,6 +131,14 @@ const Profile = () => {
                 <Typography variant="h4">
                     Información personal
                 </Typography>
+
+                {successMessage && (
+                    <Alert severity="success">{successMessage}</Alert>
+                )}
+
+                {errorMessage && (
+                    <Alert severity="error">{errorMessage}</Alert>
+                )}
 
                 <TextField
                     label="Nombre completo"

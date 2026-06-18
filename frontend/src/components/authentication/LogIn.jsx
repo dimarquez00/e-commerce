@@ -1,25 +1,29 @@
-import { Box, Button, Container, IconButton, InputAdornment, TextField, Typography } from "@mui/material"
+import { Alert, Box, Button, Container, IconButton, InputAdornment, TextField, Typography } from "@mui/material"
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
-import {useContext, useState } from "react"
+import { useContext, useState } from "react"
 import { CurrentUserContext, TokenContext } from "../../context/ContextProvider"
 
-
 const LogIn = () => {
-    const {setTokenContext} = useContext(TokenContext)
-    const {setCurrentUser} = useContext(CurrentUserContext)
+    const { setTokenContext } = useContext(TokenContext)
+    const { setCurrentUser } = useContext(CurrentUserContext)
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
-    
+    const [successMessage, setSuccessMessage] = useState("")
+    const [errorMessage, setErrorMessage] = useState("")
+
     const handleChangeEmail = (e) => setEmail(e.target.value)
     const handleChangePassword = (e) => setPassword(e.target.value)
 
     const handleClick = async () => {
+        setSuccessMessage("")
+        setErrorMessage("")
+
         if (email.trim() === "" || password.trim() === "") {
-            alert("No pueden haber campos vacíos");
-            return;
+            setErrorMessage("No pueden haber campos vacíos")
+            return
         }
 
         try {
@@ -27,35 +31,49 @@ const LogIn = () => {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
-            });
+            })
 
             if (!loginRes.ok) {
-                throw new Error("Credenciales inválidas")
+                // Intenta leer el mensaje de error del servidor
+                let serverMessage = ""
+                try {
+                    const errorData = await loginRes.json()
+                    serverMessage = errorData.message || errorData.error || ""
+                } catch {
+                    // Si el cuerpo no es JSON, lo ignora
+                }
+
+                // 401 = credenciales inválidas
+                if (loginRes.status === 401 || loginRes.status === 403) {
+                    throw new Error("Email o contraseña incorrectos")
+                }
+
+                throw new Error(serverMessage || "Error al iniciar sesión")
             }
 
-            const loginData = await loginRes.json();
-            const accessToken = loginData.access_token;
+            const loginData = await loginRes.json()
+            const accessToken = loginData.access_token
 
-            setTokenContext(accessToken);
+            setTokenContext(accessToken)
 
             const userRes = await fetch("/api/users/me", {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            });
+                headers: { Authorization: `Bearer ${accessToken}` },
+            })
 
             if (!userRes.ok) {
                 throw new Error("No se pudo obtener el usuario")
             }
 
-            const userData = await userRes.json();
-            console.log(userData);
-            setCurrentUser(userData);
+            const userData = await userRes.json()
+            setCurrentUser(userData)
+
+            setSuccessMessage(`¡Bienvenido, ${userData.name}!`)
 
         } catch (error) {
-            console.error("Error al iniciar sesión o cargar usuario.", error);
+            console.error("Error al iniciar sesión:", error)
+            setErrorMessage(error.message || "Ocurrió un error inesperado")
         }
-    };
+    }
 
     return (
         <Container maxWidth="sm">
@@ -64,21 +82,28 @@ const LogIn = () => {
                 flexDirection: "column",
                 gap: 2,
                 m: 4,
-                }}
-            >
+            }}>
                 <Typography variant="h4">
                     Inicio de sesión
                 </Typography>
 
-                <TextField 
+                {successMessage && (
+                    <Alert severity="success">{successMessage}</Alert>
+                )}
+
+                {errorMessage && (
+                    <Alert severity="error">{errorMessage}</Alert>
+                )}
+
+                <TextField
                     label="Email"
                     name="email"
                     value={email}
                     onChange={handleChangeEmail}
                 />
 
-                <TextField 
-                    label="Contraseña" 
+                <TextField
+                    label="Contraseña"
                     name="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
@@ -100,7 +125,7 @@ const LogIn = () => {
                     }}
                 />
 
-                <Button 
+                <Button
                     variant="contained"
                     onClick={handleClick}
                 >

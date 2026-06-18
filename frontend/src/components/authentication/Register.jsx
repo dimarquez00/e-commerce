@@ -1,15 +1,18 @@
-import { Box, Button, Container, TextField, Typography, IconButton, InputAdornment } from "@mui/material"
+import { Alert, Box, Button, Container, TextField, Typography, IconButton, InputAdornment } from "@mui/material"
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { useContext, useState } from "react"
 import { CurrentUserContext, TokenContext } from "../../context/ContextProvider"
-
+import { useNavigate } from "react-router-dom"
 
 const Register = () => {
-    const {setTokenContext} = useContext(TokenContext)
-    const {setCurrentUser} = useContext(CurrentUserContext)
-    
+    const { setTokenContext } = useContext(TokenContext)
+    const { setCurrentUser } = useContext(CurrentUserContext)
+    const navigate = useNavigate()
+
     const [showPassword, setShowPassword] = useState(false)
+    const [successMessage, setSuccessMessage] = useState("")
+    const [errorMessage, setErrorMessage] = useState("")
     const [formData, setFormData] = useState({
         name: "",
         dateOB: "",
@@ -22,29 +25,24 @@ const Register = () => {
             postalCode: ""
         }
     })
-    
+
     const handleChange = (e) => {
         const { name, value } = e.target
-
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value
-        }))
+        setFormData((prev) => ({ ...prev, [name]: value }))
     }
 
     const handleAddressChange = (e) => {
         const { name, value } = e.target
-
         setFormData((prev) => ({
             ...prev,
-            address: {
-                ...prev.address,
-                [name]: value
-            }
+            address: { ...prev.address, [name]: value }
         }))
     }
 
     const handleRegister = async () => {
+        setSuccessMessage("")
+        setErrorMessage("")
+
         if (
             formData.name.trim() === "" ||
             formData.dateOB.trim() === "" ||
@@ -55,21 +53,37 @@ const Register = () => {
             formData.address.province.trim() === "" ||
             formData.address.postalCode.trim() === ""
         ) {
-            alert("Todos los campos son obligatorios")
+            setErrorMessage("Todos los campos son obligatorios")
             return
         }
 
         try {
             const registerRes = await fetch("/api/auth/register", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
             })
 
             if (!registerRes.ok) {
-                throw new Error("Error al registrar usuario")
+                // Intenta leer el mensaje de error que devuelve el servidor
+                let serverMessage = ""
+                try {
+                    const errorData = await registerRes.json()
+                    serverMessage = errorData.message || errorData.error || ""
+                } catch {
+                    // Si el cuerpo no es JSON, lo ignora
+                }
+
+                // Mensaje específico para email duplicado (400 o 409)
+                if (registerRes.status === 409 || registerRes.status === 400 ||
+                    serverMessage.toLowerCase().includes("email") ||
+                    serverMessage.toLowerCase().includes("duplicate") ||
+                    serverMessage.toLowerCase().includes("ya existe")
+                ) {
+                    throw new Error("El email ingresado ya está registrado")
+                }
+
+                throw new Error(serverMessage || "Error al registrar usuario")
             }
 
             const registerData = await registerRes.json()
@@ -78,22 +92,24 @@ const Register = () => {
             setTokenContext(accessToken)
 
             const userRes = await fetch("/api/users/me", {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            });
+                headers: { Authorization: `Bearer ${accessToken}` },
+            })
 
             if (!userRes.ok) {
                 throw new Error("No se pudo obtener el usuario")
             }
 
-            const userData = await userRes.json();
-            console.log(userData);
-            setCurrentUser(userData);
+            const userData = await userRes.json()
+            setCurrentUser(userData)
+
+            setSuccessMessage(`¡Registro exitoso! Bienvenido, ${userData.name}.`)
+
+            // Redirige a productos después de 2 segundos
+            setTimeout(() => navigate("/products"), 2000)
 
         } catch (error) {
             console.error(error)
-            alert("Ocurrió un error")
+            setErrorMessage(error.message || "Ocurrió un error inesperado")
         }
     }
 
@@ -111,6 +127,14 @@ const Register = () => {
                     Registro
                 </Typography>
 
+                {successMessage && (
+                    <Alert severity="success">{successMessage}</Alert>
+                )}
+
+                {errorMessage && (
+                    <Alert severity="error">{errorMessage}</Alert>
+                )}
+
                 <TextField
                     label="Nombre completo"
                     name="name"
@@ -126,9 +150,7 @@ const Register = () => {
                     onChange={handleChange}
                     fullWidth
                     slotProps={{
-                        inputLabel: {
-                            shrink: true
-                    },
+                        inputLabel: { shrink: true },
                     }}
                 />
 
