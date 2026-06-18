@@ -50,6 +50,7 @@ const ResponsiveAppBar = () => {
     const settings = isLoggedIn
     ? [
         { label: "Profile", path: "/profile" },
+        { label: "Pedidos", path: "/orders" },
         ...(currentUser?.role === "ADMIN"
             ? [{ label: "Admin", path: "/admin"}]
             :[]),
