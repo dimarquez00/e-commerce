@@ -2,22 +2,35 @@ import { Card, CardContent, Typography, Button, CardActions, Chip, CardMedia} fr
 import img from "../../assets/emptyImg.png"
 import { useContext, useState } from "react"
 import NumberSpinner from "../NumberSpinner"
-import { CartContext, CategoryContext } from "../../context/ContextProvider"
+import { CategoryContext } from "../../context/ContextProvider"
+// import { CartContext } from "../../context/ContextProvider"
 import { NotificationContext } from "../../context/NotificationProvider"
+import { useDispatch } from "react-redux"
+import { addToCart } from "../../store/cartSlice"
 
 const ProductCard = ({product}) => {
     const { id, name, description, price, stock, categories, image } = product
 
     const [quantity, setQuantity] = useState(1)
-    const {cart, setCart} = useContext(CartContext)
+    // const {cart, setCart} = useContext(CartContext)
     const {categories: categoriesMap} = useContext(CategoryContext)
     const { showNotification } = useContext(NotificationContext)
+    const dispatch = useDispatch();
 
     const handleAddCart = () => {
-        setCart((prevCart) => ({
-            ...prevCart,
-            [id]: (prevCart[id] || 0) + quantity
-        }))
+        // setCart((prevCart) => ({
+        //     ...prevCart,
+        //     [id]: (prevCart[id] || 0) + quantity
+        // }))
+
+        
+
+        dispatch(
+            addToCart({
+                productId: id,
+                quantity
+            })
+        )
 
         showNotification("Producto agregado al carrito")
 

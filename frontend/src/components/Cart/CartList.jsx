@@ -4,14 +4,19 @@ import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import CartCard from "./CartCard"
 import { useContext, useEffect, useState } from "react"
-import { CartContext, CurrentUserContext, TokenContext } from "../../context/ContextProvider"
+import { CurrentUserContext, TokenContext } from "../../context/ContextProvider"
+// import { CartContext } from "../../context/ContextProvider"
 import ConfirmedOrder from "./ConfirmedOrder";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { clearCart } from "../../store/cartSlice";
 
 const CartList = () => {
-    const {cart, setCart} = useContext(CartContext)
+    // const {cart, setCart} = useContext(CartContext)
     const {tokenContext} = useContext(TokenContext)
     const {currentUser} = useContext(CurrentUserContext)
+    const cart = useSelector((state) => state.cart.items)
+    const dispatch = useDispatch()
 
     // const [confirmedOrder, setConfirmedOrder] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -19,7 +24,6 @@ const CartList = () => {
 
     const navigate = useNavigate()
 
-    console.log(cart)
     const userId = currentUser?.id
 
     const isLoggedIn = !!tokenContext;
@@ -94,11 +98,11 @@ const CartList = () => {
             const orderData = await confirmResponse.json();
 
             // 4. Mostrar confirmación
-            console.log(orderData);
             // alert("Pedido confirmado");
 
             // 5. Vaciar carrito
-            setCart({});
+            // setCart({});
+            dispatch(clearCart())
             setSuccess(true);
 
             // 6. Ir a view de confirmación de pedido
@@ -116,7 +120,6 @@ const CartList = () => {
         }
     };
     
-
     return (
         <Container>
             <Typography variant="h3">Carrito:</Typography>

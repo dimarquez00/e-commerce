@@ -1,4 +1,3 @@
-// import './App.css'
 import { Container } from '@mui/material'
 import LogIn from './components/authentication/LogIn'
 import ProductList from './components/product/ProductList'
@@ -9,7 +8,7 @@ import LogInView from './views/LogInView'
 import ProfileView from './views/ProfileView.jsx'
 import AdminView from './views/AdminView.jsx'
 import CartView from './views/CartView.jsx'
-import { ContextProvider } from './context/ContextProvider.jsx'
+// import { ContextProvider } from './context/ContextProvider.jsx'
 import ConfirmedOrderView from './views/ConfirmedOrderView.jsx'
 import RegisterView from './views/RegisterView.jsx'
 
@@ -18,7 +17,7 @@ function App() {
     const location = useLocation()
 
     return (
-        <ContextProvider>
+        // <ContextProvider>
             <Container>
                 <ResponsiveAppBar/>
                 {/* <Navigation/> */}
@@ -35,7 +34,7 @@ function App() {
                     <Route path='/register' element={<RegisterView/>}/>
                 </Routes>
             </Container>
-        </ContextProvider>
+        // </ContextProvider>
   )
 }
 

@@ -88,7 +88,6 @@ const Register = () => {
             }
 
             const userData = await userRes.json();
-            console.log(userData);
             setCurrentUser(userData);
 
         } catch (error) {

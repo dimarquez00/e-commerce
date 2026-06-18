@@ -1,14 +1,18 @@
 import { Card, CardActions, CardContent, Container, IconButton, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import NumberSpinner from "../NumberSpinner"
-import { CartContext, TokenContext } from "../../context/ContextProvider"
+import { TokenContext } from "../../context/ContextProvider"
+// import { CartContext } from "../../context/ContextProvider"
 // import { DeleteIcon } from "@mui/icons-material/Delete"
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useDispatch } from "react-redux";
+import { removeFromCart, updateQuantity } from "../../store/cartSlice";
 
 const CartCard = ({id, quantityProp}) => {
     const [product, setProduct] = useState({})
     const [quantity, setQuantity] = useState(quantityProp)
-    const {cart, setCart} = useContext(CartContext)
+    // const {cart, setCart} = useContext(CartContext)
+    const dispatch = useDispatch()
 
     const {tokenContext} = useContext(TokenContext)
     const URL = `/api/products/${id}`
@@ -18,26 +22,34 @@ const CartCard = ({id, quantityProp}) => {
         fetch(URL)
             .then((response) => response.json())
             .then((data) => {
-                setProduct(data),
-                console.log(data)})
+                setProduct(data)})
             .catch((error) => console.error("Error al cargar los productos.", error))
     }, [])
 
     const handleQuantityChange = (newQuantity) => {
         setQuantity(newQuantity)
 
-        setCart((prevCart) => ({
-            ...prevCart,
-            [id]:  newQuantity
-        }))
+        // setCart((prevCart) => ({
+        //     ...prevCart,
+        //     [id]:  newQuantity
+        // }))
+
+        dispatch(
+            updateQuantity({
+                productId: id,
+                quantity: newQuantity
+            })
+        )
     }
 
     const handleRemoveCart = () => {
-        setCart((prevCart) => {
-            const newCart = {...prevCart}
-            delete newCart[id]
-            return newCart
-        })
+        // setCart((prevCart) => {
+        //     const newCart = {...prevCart}
+        //     delete newCart[id]
+        //     return newCart
+        // })
+
+        dispatch(removeFromCart(id))
     }
 
     return (

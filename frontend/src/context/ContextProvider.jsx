@@ -5,7 +5,7 @@ export const TokenContext = createContext("")
 
 export const CurrentUserContext = createContext({})
 
-export const CartContext = createContext({})
+// export const CartContext = createContext({})
 
 export const CategoryContext = createContext([])
 
@@ -14,7 +14,7 @@ export function ContextProvider({children}) {
 
     const [currentUser, setCurrentUser] = useState(null)
 
-    const [cart, setCart] = useState({})
+    // const [cart, setCart] = useState({})
 
     const [categories, setCategories] = useState([])
 
@@ -27,12 +27,12 @@ export function ContextProvider({children}) {
                     setTokenContext
                 }}
             >
-                <CartContext
+                {/* <CartContext
                     value={{
                         cart,
                         setCart
                     }}
-                >
+                > */}
                     <CurrentUserContext
                         value={{
                             currentUser,
@@ -48,7 +48,7 @@ export function ContextProvider({children}) {
                             {children}
                         </CategoryContext>
                     </CurrentUserContext>
-                </CartContext>
+                {/* </CartContext> */}
             </TokenContext>
         </NotificationProvider>
     )

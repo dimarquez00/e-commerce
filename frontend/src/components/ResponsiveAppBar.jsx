@@ -15,7 +15,9 @@ import AdbIcon from '@mui/icons-material/Adb';
 import Badge from '@mui/material/Badge';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
-import { CartContext, CurrentUserContext, TokenContext } from '../context/ContextProvider';
+import { CurrentUserContext, TokenContext } from '../context/ContextProvider';
+import { useSelector } from 'react-redux';
+// import { CartContext } from '../context/ContextProvider';
 
 const pages = [
     { label: 'Products', path: '/products' },
@@ -29,9 +31,10 @@ const pages = [
 
 
 const ResponsiveAppBar = () => {
-    const {cart} = React.useContext(CartContext)
+    // const {cart} = React.useContext(CartContext)
     const {currentUser, setCurrentUser} = React.useContext(CurrentUserContext)
     const {setTokenContext} = React.useContext(TokenContext)
+    const cart = useSelector((state) => state.cart.items)
     const navigate = useNavigate();
 
     const [anchorElNav, setAnchorElNav] = React.useState(null);

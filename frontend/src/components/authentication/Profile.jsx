@@ -103,7 +103,6 @@ const Profile = () => {
 
             const updatedUser = await response.json()
 
-            console.log(updatedUser);
             setCurrentUser(updatedUser);
 
         } catch (error) {
