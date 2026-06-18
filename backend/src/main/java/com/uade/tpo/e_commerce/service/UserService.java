@@ -52,7 +52,12 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         dto.setId(id);
 
-        if (dto.getEmail() == user.getEmail()) {
+        // if (dto.getEmail() == user.getEmail()) {
+        //     throw new EmailInUseException(dto.getEmail());
+        // }
+
+        if (!dto.getEmail().equals(user.getEmail())
+                && userRepository.existsByEmail(dto.getEmail())) {
             throw new EmailInUseException(dto.getEmail());
         }
 
@@ -62,6 +67,7 @@ public class UserService {
 
         User entity = dtoToEntity(dto);
         entity.setPassword(user.getPassword());
+        entity.setRole(user.getRole());
 
         userRepository.save(entity);
         return dto;
