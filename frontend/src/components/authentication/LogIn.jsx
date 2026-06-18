@@ -69,9 +69,6 @@ const LogIn = () => {
 
             setSuccessMessage(`¡Bienvenido, ${userData.name}!`)
 
-            // Redirige al perfil después de 1.5 segundos
-            setTimeout(() => navigate("/profile"), 1500)
-
         } catch (error) {
             console.error("Error al iniciar sesión:", error)
             setErrorMessage(error.message || "Ocurrió un error inesperado")

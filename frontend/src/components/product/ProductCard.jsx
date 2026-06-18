@@ -1,6 +1,7 @@
 import { Card, CardContent, Typography, Button, CardActions, Chip, CardMedia } from "@mui/material"
 import img from "../../assets/emptyImg.png"
 import { useContext, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import NumberSpinner from "../NumberSpinner"
 // useSelector lee datos del store global; useDispatch envía acciones al store
 import { useSelector, useDispatch } from "react-redux"
@@ -13,6 +14,8 @@ const ProductCard = ({ product }) => {
     const { id, name, description, price, stock, categories, image } = product
 
     const [quantity, setQuantity] = useState(1)
+
+    const navigate = useNavigate()
 
     // useDispatch devuelve la función dispatch para enviar acciones al store
     const dispatch = useDispatch()
@@ -64,7 +67,7 @@ const ProductCard = ({ product }) => {
                 ))}
             </CardContent>
 
-            <CardActions>
+            <CardActions sx={{ flexDirection: "column", alignItems: "flex-start", gap: 1, px: 2, pb: 2, "& > *": { ml: "0 !important" } }}>
                 <NumberSpinner
                     value={quantity}
                     onValueChange={setQuantity}
@@ -77,9 +80,17 @@ const ProductCard = ({ product }) => {
                     onClick={handleAddCart}
                     variant="contained"
                     disabled={stock === 0}
-                    sx={{ mt: 2, width: 150 }}
+                    fullWidth
                 >
                     Agregar al carrito
+                </Button>
+                {/* useNavigate navega a la ruta /products/:id con el id del producto */}
+                <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => navigate(`/products/${id}`)}
+                >
+                    Ver detalle
                 </Button>
             </CardActions>
         </Card>

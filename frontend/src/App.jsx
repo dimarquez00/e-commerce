@@ -9,6 +9,7 @@ import CartView from './views/CartView.jsx'
 import { ContextProvider } from './context/ContextProvider.jsx'
 import ConfirmedOrderView from './views/ConfirmedOrderView.jsx'
 import RegisterView from './views/RegisterView.jsx'
+import ProductDetailView from './views/ProductDetailView.jsx'
 // Provider conecta el store de Redux con todos los componentes hijos del árbol
 import { Provider } from 'react-redux'
 import { store } from './store/index.js'
@@ -33,6 +34,7 @@ function App() {
                         <Route path='/cart' element={<CartView />} />
                         <Route path='/confirmedorder' element={<ConfirmedOrderView />} />
                         <Route path='/register' element={<RegisterView />} />
+                        <Route path='/products/:id' element={<ProductDetailView />} />
                     </Routes>
                 </Container>
             </ContextProvider>
