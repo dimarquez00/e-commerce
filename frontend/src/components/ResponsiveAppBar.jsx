@@ -20,7 +20,7 @@ import { useSelector } from 'react-redux';
 // import { CartContext } from '../context/ContextProvider';
 
 const pages = [
-    { label: 'Products', path: '/products' },
+    { label: 'Productos', path: '/products' },
     // { label: 'Profile', path: '/profile' },
     // { label: 'Admin', path: '/admin' },
     // { label: 'Carrito', path: '/cart' },
@@ -49,16 +49,16 @@ const ResponsiveAppBar = () => {
 
     const settings = isLoggedIn
     ? [
-        { label: "Profile", path: "/profile" },
+        { label: "Perfil", path: "/profile" },
         { label: "Pedidos", path: "/orders" },
         ...(currentUser?.role === "ADMIN"
             ? [{ label: "Admin", path: "/admin"}]
             :[]),
-        { label: "Logout", action: "logout" }
+        { label: "Cerrar sesión", action: "logout" }
     ]
     : [
-        { label: "LogIn", path: "/login" },
-        { label: "Register", path: "/register" }
+        { label: "Iniciar sesión", path: "/login" },
+        { label: "Registrarse", path: "/register" }
     ];
 
     const handleLogout = () => {
