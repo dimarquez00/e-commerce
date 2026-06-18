@@ -3,10 +3,12 @@ import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { useContext, useState } from "react"
 import { CurrentUserContext, TokenContext } from "../../context/ContextProvider"
+import { useNavigate } from "react-router-dom"
 
 const LogIn = () => {
     const { setTokenContext } = useContext(TokenContext)
     const { setCurrentUser } = useContext(CurrentUserContext)
+    const navigate = useNavigate()
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -34,7 +36,6 @@ const LogIn = () => {
             })
 
             if (!loginRes.ok) {
-                // Intenta leer el mensaje de error del servidor
                 let serverMessage = ""
                 try {
                     const errorData = await loginRes.json()
@@ -43,7 +44,6 @@ const LogIn = () => {
                     // Si el cuerpo no es JSON, lo ignora
                 }
 
-                // 401 = credenciales inválidas
                 if (loginRes.status === 401 || loginRes.status === 403) {
                     throw new Error("Email o contraseña incorrectos")
                 }
@@ -68,6 +68,9 @@ const LogIn = () => {
             setCurrentUser(userData)
 
             setSuccessMessage(`¡Bienvenido, ${userData.name}!`)
+
+            // Redirige al perfil después de 1.5 segundos
+            setTimeout(() => navigate("/profile"), 1500)
 
         } catch (error) {
             console.error("Error al iniciar sesión:", error)

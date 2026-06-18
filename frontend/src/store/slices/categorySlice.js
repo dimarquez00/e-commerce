@@ -4,24 +4,41 @@ import { createSlice } from '@reduxjs/toolkit';
 // Las categorías se representan como un mapa: { [id]: name }
 // Ejemplo: { "1": "Electrónica", "2": "Ropa" }
 const categorySlice = createSlice({
-  name: 'category', // Nombre del slice
+  name: 'category',
   initialState: {
     // categoriesMap es un objeto donde cada clave es el id de la categoría y el valor es su nombre
     categoriesMap: {}
   },
   reducers: {
 
-    // Reemplaza el mapa de categorías completo con los datos recibidos del servidor
-    // Se llama una sola vez al cargar la lista de productos
+    // Reemplaza el mapa completo (se usa al cargar la app por primera vez)
     // action.payload = { "1": "Electrónica", "2": "Ropa", ... }
     setCategories: (state, action) => {
       state.categoriesMap = action.payload;
     },
+
+    // Agrega una nueva categoría al mapa (se usa desde el panel admin al crear)
+    // action.payload = { id: 3, name: "Deportes" }
+    addCategory: (state, action) => {
+      const { id, name } = action.payload;
+      state.categoriesMap[id] = name;
+    },
+
+    // Actualiza el nombre de una categoría existente (se usa desde el panel admin al editar)
+    // action.payload = { id: 3, name: "Deportes y Fitness" }
+    updateCategory: (state, action) => {
+      const { id, name } = action.payload;
+      state.categoriesMap[id] = name;
+    },
+
+    // Elimina una categoría del mapa por su id (se usa desde el panel admin al borrar)
+    // action.payload = 3  (el id de la categoría a eliminar)
+    removeCategory: (state, action) => {
+      delete state.categoriesMap[action.payload];
+    },
   },
 });
 
-// Exporta las acciones para usarlas en los componentes con dispatch
-export const { setCategories } = categorySlice.actions;
+export const { setCategories, addCategory, updateCategory, removeCategory } = categorySlice.actions;
 
-// Exporta el reducer para agregarlo al store global
 export default categorySlice.reducer;

@@ -19,23 +19,18 @@ const CartCard = ({ id, quantityProp }) => {
     useEffect(() => {
         fetch(URL)
             .then((response) => response.json())
-            .then((data) => {
-                setProduct(data)
-                console.log(data)
-            })
+            .then((data) => setProduct(data))
             .catch((error) => console.error("Error al cargar los productos.", error))
     }, [])
 
     const handleQuantityChange = (newQuantity) => {
         setQuantity(newQuantity)
         // dispatch envía la acción updateQuantity al store con el id y la nueva cantidad
-        // Antes: setCart((prevCart) => ({ ...prevCart, [id]: newQuantity }))
         dispatch(updateQuantity({ id, quantity: newQuantity }))
     }
 
     const handleRemoveCart = () => {
         // dispatch envía la acción removeFromCart al store con el id del producto a eliminar
-        // Antes: setCart((prevCart) => { const newCart = {...prevCart}; delete newCart[id]; return newCart })
         dispatch(removeFromCart(id))
     }
 

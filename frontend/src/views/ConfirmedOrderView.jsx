@@ -5,7 +5,6 @@ const ConfirmedOrderView = () => {
 
     return (
         <Container>
-            <Typography variant='h2'>Vista ConfirmedOrderView</Typography>
             <ConfirmedOrder/>
         </Container>
     )

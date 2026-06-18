@@ -57,6 +57,7 @@ public class User implements UserDetails {
     private List<Order> orders;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     @Override

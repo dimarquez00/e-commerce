@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 const CartList = () => {
     // useSelector se suscribe al store y devuelve el objeto de items del carrito
     // { [productId]: quantity } — cada vez que cambie, CartList se re-renderiza automáticamente
-    // Antes: const { cart, setCart } = useContext(CartContext)
     const cart = useSelector((state) => state.cart.items)
 
     // useDispatch devuelve la función dispatch para enviar acciones al store
@@ -85,7 +84,6 @@ const CartList = () => {
             }
 
             const orderData = await confirmResponse.json();
-            console.log(orderData);
 
             // 4. Vaciar el carrito en el store de Redux
             dispatch(clearCart())
@@ -121,10 +119,10 @@ const CartList = () => {
             >
                 {loading ? (
                     <CircularProgress size={24} />
-                ) : !isLoggedIn ? (
-                    "Inicia sesión para comprar"
                 ) : isCartEmpty ? (
                     "Carrito vacío"
+                ) : !isLoggedIn ? (
+                    "Inicia sesión para comprar"
                 ) : (
                     "Confirmar pedido"
                 )}

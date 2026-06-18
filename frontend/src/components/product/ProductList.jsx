@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import ProductCard from "./ProductCard"
+import ProductFilter from "./ProductFilter"
 import { Box, CircularProgress, Container, Typography } from "@mui/material"
 // useDispatch permite despachar acciones al store global de Redux
 import { useDispatch } from "react-redux"
@@ -8,12 +9,30 @@ import { setCategories } from "../../store/slices/categorySlice"
 
 const ProductList = () => {
     // useDispatch devuelve la función dispatch del store global
-    // Se usa para enviar acciones a Redux en lugar de llamar a setCategories del contexto
     const dispatch = useDispatch()
 
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+
+    // Estado local para el filtro y el orden (no necesitan ser globales)
+    const [selectedCategories, setSelectedCategories] = useState([])
+    const [sortOrder, setSortOrder] = useState("asc")
+
+    // Filtra los productos según las categorías seleccionadas
+    const filteredProducts =
+        selectedCategories.length === 0
+            ? products
+            : products.filter((product) =>
+                product.categories.some((categoryId) =>
+                    selectedCategories.includes(categoryId)
+                )
+            )
+
+    // Ordena los productos filtrados por precio
+    const sortedProducts = [...filteredProducts].sort((a, b) =>
+        sortOrder === "asc" ? a.price - b.price : b.price - a.price
+    )
 
     useEffect(() => {
         const loadData = async () => {
@@ -36,8 +55,6 @@ const ProductList = () => {
 
                 setProducts(productsData)
                 // dispatch envía la acción setCategories al store con el mapa de categorías
-                // Antes: setCategories(categoriesMap) desde el contexto
-                // Ahora: dispatch(setCategories(categoriesMap)) al store de Redux
                 dispatch(setCategories(categoriesMap))
 
             } catch (error) {
@@ -61,7 +78,13 @@ const ProductList = () => {
 
     return (
         <Container>
-            <Typography variant="h3">Lista de productos:</Typography>
+            <ProductFilter
+                selectedCategories={selectedCategories}
+                setSelectedCategories={setSelectedCategories}
+                sortOrder={sortOrder}
+                setSortOrder={setSortOrder}
+            />
+
             <Box
                 sx={{
                     display: "flex",
@@ -70,7 +93,7 @@ const ProductList = () => {
                     gap: 4
                 }}
             >
-                {products.map((product) => (
+                {sortedProducts.map((product) => (
                     <ProductCard
                         key={product.id}
                         product={product}

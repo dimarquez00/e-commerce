@@ -5,7 +5,6 @@ const ProfileView = () => {
 
     return (
         <Container>
-            <Typography variant='h2'>Vista ProfileView</Typography>
             <Profile />
         </Container>
     )

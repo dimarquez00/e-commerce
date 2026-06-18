@@ -1,4 +1,3 @@
-// import './App.css'
 import { Container } from '@mui/material'
 import ResponsiveAppBar from './components/ResponsiveAppBar'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
@@ -10,6 +9,7 @@ import CartView from './views/CartView.jsx'
 import { ContextProvider } from './context/ContextProvider.jsx'
 import ConfirmedOrderView from './views/ConfirmedOrderView.jsx'
 import RegisterView from './views/RegisterView.jsx'
+// Provider conecta el store de Redux con todos los componentes hijos del árbol
 import { Provider } from 'react-redux'
 import { store } from './store/index.js'
 
@@ -20,7 +20,7 @@ function App() {
     return (
         // Provider hace que el store global esté disponible en todos los componentes
         <Provider store={store}>
-            {/* ContextProvider mantiene TokenContext y CurrentUserContext */}
+            {/* ContextProvider mantiene TokenContext, CurrentUserContext y NotificationProvider */}
             <ContextProvider>
                 <Container>
                     <ResponsiveAppBar />

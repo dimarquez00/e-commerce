@@ -1,11 +1,13 @@
 import { Card, CardContent, Typography, Button, CardActions, Chip, CardMedia } from "@mui/material"
 import img from "../../assets/emptyImg.png"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import NumberSpinner from "../NumberSpinner"
 // useSelector lee datos del store global; useDispatch envía acciones al store
 import { useSelector, useDispatch } from "react-redux"
 // addToCart es la acción del cartSlice para agregar un producto al carrito
 import { addToCart } from "../../store/slices/cartSlice"
+// showNotification muestra un Snackbar global al agregar al carrito
+import { NotificationContext } from "../../context/NotificationProvider"
 
 const ProductCard = ({ product }) => {
     const { id, name, description, price, stock, categories, image } = product
@@ -17,14 +19,14 @@ const ProductCard = ({ product }) => {
 
     // useSelector se suscribe al store y devuelve el mapa de categorías
     // Cada vez que state.category.categoriesMap cambie, este componente se re-renderiza
-    // Antes: const { categories: categoriesMap } = useContext(CategoryContext)
     const categoriesMap = useSelector((state) => state.category.categoriesMap)
+
+    const { showNotification } = useContext(NotificationContext)
 
     const handleAddCart = () => {
         // dispatch envía la acción addToCart al store con el id y la cantidad
-        // Antes: setCart((prevCart) => ({ ...prevCart, [id]: (prevCart[id] || 0) + quantity }))
-        // Ahora: Redux maneja la lógica de suma dentro del reducer de cartSlice
         dispatch(addToCart({ id, quantity }))
+        showNotification("Producto agregado al carrito")
     }
 
     return (
