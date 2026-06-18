@@ -5,7 +5,6 @@ const RegisterView = () => {
 
     return (
         <Container>
-            <Typography variant="h2">Vista RegisterView</Typography>
             <Register/>
         </Container>
     )

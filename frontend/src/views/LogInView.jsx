@@ -5,7 +5,6 @@ const LogInView = () => {
 
     return (
         <Container>
-            <Typography variant='h2'>Vista LogInView</Typography>
             <LogIn/>
         </Container>
     )

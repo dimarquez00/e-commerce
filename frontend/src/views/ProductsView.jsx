@@ -5,7 +5,6 @@ const ProductsView = () => {
 
     return (
         <Container>
-            {/* <Typography variant='h2'>Vista ProductsView</Typography> */}
             <ProductList/>
         </Container>
     )

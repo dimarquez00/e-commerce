@@ -298,6 +298,13 @@ const AdminProductList = () => {
                 onDelete={handleDeleteCategory}
             />
 
+            <Typography
+                variant="h6"
+                sx={{ mb: 2 }}
+            >
+                Productos
+            </Typography>
+
             <ProductFilter
                 selectedCategories={selectedCategories}
                 setSelectedCategories={setSelectedCategories}
