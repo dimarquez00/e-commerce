@@ -53,6 +53,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/products").permitAll() // catálogo: listar productos sin JWT
                 .requestMatchers(HttpMethod.GET, "/api/products/*").permitAll() // catálogo: listar productos sin JWT
                 .requestMatchers(HttpMethod.GET, "/api/categories").permitAll() // categorias visibles sin token
+                .requestMatchers(HttpMethod.GET, "/api/images/**").permitAll() // imágenes públicas sin token
                 .anyRequest().authenticated()) //el resto requiere autenticación
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); //agrega el filtro JWT
 
