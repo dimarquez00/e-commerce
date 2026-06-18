@@ -1,8 +1,10 @@
 import { Card, CardContent, Typography, Button, CardActions, Chip, CardMedia, TextField, Box, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material"
 import img from "../../assets/emptyImg.png"
-import { useState } from "react"
+import { useContext, useState } from "react"
+import { CategoryContext } from "../../context/ContextProvider"
 
 const AdminProductCard = ({ product, onUpdate, onDelete }) => {
+    const { categories } = useContext(CategoryContext)
     const [formData, setFormData] = useState(product)
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
@@ -69,6 +71,42 @@ const AdminProductCard = ({ product, onUpdate, onDelete }) => {
                     onChange={handleChange}
                     margin="normal"
                 />
+
+                <Typography
+                    variant="subtitle2"
+                    sx={{ mt: 2, mb: 1 }}
+                >
+                    Categorías
+                </Typography>
+
+                <Box>
+                    {Object.entries(categories).map(([id, name]) => (
+                        <Chip
+                            key={id}
+                            label={name}
+                            clickable
+                            color={
+                                formData.categories?.includes(Number(id))
+                                    ? "primary"
+                                    : "default"
+                            }
+                            onClick={() =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    categories: prev.categories?.includes(Number(id))
+                                        ? prev.categories.filter(
+                                            categoryId => categoryId !== Number(id)
+                                        )
+                                        : [
+                                            ...(prev.categories || []),
+                                            Number(id)
+                                        ]
+                                }))
+                            }
+                            sx={{ mr: 1, mb: 1 }}
+                        />
+                    ))}
+                </Box>
 
             </CardContent>
 

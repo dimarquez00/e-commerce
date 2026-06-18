@@ -5,7 +5,6 @@ const AdminView = () => {
 
     return (
         <Container>
-            <Typography variant='h2'>Vista AdminView</Typography>
             <AdminProductList />
         </Container>
     )

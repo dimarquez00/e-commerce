@@ -20,7 +20,7 @@ import { CartContext, CurrentUserContext, TokenContext } from '../context/Contex
 const pages = [
     { label: 'Products', path: '/products' },
     // { label: 'Profile', path: '/profile' },
-    { label: 'Admin', path: '/admin' },
+    // { label: 'Admin', path: '/admin' },
     // { label: 'Carrito', path: '/cart' },
     // { label: 'LogIn', path: '/login' },
     // { label: 'Register', path: '/register' },
@@ -47,6 +47,9 @@ const ResponsiveAppBar = () => {
     const settings = isLoggedIn
     ? [
         { label: "Profile", path: "/profile" },
+        ...(currentUser?.role === "ADMIN"
+            ? [{ label: "Admin", path: "/admin"}]
+            :[]),
         { label: "Logout", action: "logout" }
     ]
     : [

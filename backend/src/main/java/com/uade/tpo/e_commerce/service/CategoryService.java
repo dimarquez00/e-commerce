@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.uade.tpo.e_commerce.exception.CategoryNotFoundException;
 import com.uade.tpo.e_commerce.model.Category;
+import com.uade.tpo.e_commerce.model.Product;
 import com.uade.tpo.e_commerce.model.dto.CategoryCreateDTO;
 import com.uade.tpo.e_commerce.model.dto.CategoryDTO;
 import com.uade.tpo.e_commerce.repository.CategoryRepository;
+import com.uade.tpo.e_commerce.repository.ProductRepository;
 
 @Service
 @Transactional
@@ -19,6 +21,9 @@ public class CategoryService {
     
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     // Lista todas las categorías persistidas como DTOs.
     public List<CategoryDTO> getCategories() {
@@ -54,9 +59,19 @@ public class CategoryService {
 
     // Elimina la categoría por id y devuelve el DTO de lo borrado; falla si no existe.
     public CategoryDTO deleteCategory(Long id) {
-        Category entity = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
-        categoryRepository.delete(entity);
-        return entityToDto(entity);
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
+
+        List<Product> products = new ArrayList<>(category.getProducts());
+
+        for (Product product : products) {
+            product.getCategories().remove(category);
+        }
+
+        productRepository.saveAll(products);
+
+        categoryRepository.delete(category);
+
+        return entityToDto(category);
     }
 
     // Mapea entidad Category a CategoryDTO para la API.

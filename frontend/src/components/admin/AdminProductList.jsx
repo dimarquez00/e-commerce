@@ -4,6 +4,7 @@ import { CategoryContext, CurrentUserContext, TokenContext } from "../../context
 import ProductFilter from "../product/ProductFilter"
 import { Navigate } from "react-router-dom"
 import AdminProductCard from "./AdminProductCard"
+import AdminCategoryManager from "./AdminCategoryManager"
 import { NotificationContext } from "../../context/NotificationProvider"
 
 const AdminProductList = () => {
@@ -151,6 +152,95 @@ const AdminProductList = () => {
         }
     }
 
+    const handleCreateCategory = async (name) => {
+        try {
+            const response = await fetch("/api/categories", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${tokenContext}`
+                },
+                body: JSON.stringify({ name })
+            })
+
+            if (!response.ok) {
+                throw new Error("Error al crear categoría")
+            }
+
+            const newCategory = await response.json()
+
+            setCategories(prev => ({
+                ...prev,
+                [newCategory.id]: newCategory.name
+            }))
+
+            showNotification("Categoría creada correctamente")
+
+        } catch (error) {
+            setError(error.message)
+        }
+    }
+
+    const handleUpdateCategory = async (id, name) => {
+        try {
+            const response = await fetch(
+                `/api/categories/${id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${tokenContext}`
+                    },
+                    body: JSON.stringify({ name })
+                }
+            )
+
+            if (!response.ok) {
+                throw new Error("Error al actualizar categoría")
+            }
+
+            const updatedCategory = await response.json()
+
+            setCategories(prev => ({
+                ...prev,
+                [updatedCategory.id]: updatedCategory.name
+            }))
+
+            showNotification("Categoría actualizada")
+
+        } catch (error) {
+            setError(error.message)
+        }
+    }
+
+    const handleDeleteCategory = async (id) => {
+        try {
+            const response = await fetch(
+                `/api/categories/${id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${tokenContext}`
+                    }
+                }
+            )
+
+            if (!response.ok) {
+                throw new Error("Error al eliminar categoría")
+            }
+
+            setCategories(prev => {
+                const copy = { ...prev }
+                delete copy[id]
+                return copy
+            })
+
+            showNotification("Categoría eliminada")
+
+        } catch (error) {
+            setError(error.message)
+        }
+    }
 
     useEffect(() => {
         const loadData = async () => {
@@ -201,6 +291,12 @@ const AdminProductList = () => {
 
     return (
         <Container>
+            <AdminCategoryManager
+                products={products}
+                onCreate={handleCreateCategory}
+                onUpdate={handleUpdateCategory}
+                onDelete={handleDeleteCategory}
+            />
 
             <ProductFilter
                 selectedCategories={selectedCategories}
