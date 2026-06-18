@@ -1,78 +1,86 @@
-import { Card, CardContent, Typography, Button, CardActions, Chip, CardMedia} from "@mui/material"
+import { Card, CardContent, Typography, Button, CardActions, Chip, CardMedia } from "@mui/material"
 import img from "../../assets/emptyImg.png"
-import { useContext, useState } from "react"
+import { useState } from "react"
 import NumberSpinner from "../NumberSpinner"
-import { CartContext, CategoryContext } from "../../context/ContextProvider"
+// useSelector lee datos del store global; useDispatch envía acciones al store
+import { useSelector, useDispatch } from "react-redux"
+// addToCart es la acción del cartSlice para agregar un producto al carrito
+import { addToCart } from "../../store/slices/cartSlice"
 
-const ProductCard = ({product}) => {
+const ProductCard = ({ product }) => {
     const { id, name, description, price, stock, categories, image } = product
 
     const [quantity, setQuantity] = useState(1)
-    const {cart, setCart} = useContext(CartContext)
-    const {categories: categoriesMap} = useContext(CategoryContext)
+
+    // useDispatch devuelve la función dispatch para enviar acciones al store
+    const dispatch = useDispatch()
+
+    // useSelector se suscribe al store y devuelve el mapa de categorías
+    // Cada vez que state.category.categoriesMap cambie, este componente se re-renderiza
+    // Antes: const { categories: categoriesMap } = useContext(CategoryContext)
+    const categoriesMap = useSelector((state) => state.category.categoriesMap)
 
     const handleAddCart = () => {
-        setCart((prevCart) => ({
-            ...prevCart,
-            [id]: (prevCart[id] || 0) + quantity
-        }))
+        // dispatch envía la acción addToCart al store con el id y la cantidad
+        // Antes: setCart((prevCart) => ({ ...prevCart, [id]: (prevCart[id] || 0) + quantity }))
+        // Ahora: Redux maneja la lógica de suma dentro del reducer de cartSlice
+        dispatch(addToCart({ id, quantity }))
     }
 
     return (
-    <Card 
-        elevation={3}
-        sx={{
-            flex: "1 1 300",
-            maxWidth: 350
-        }}
-    >
-        <CardMedia
-            component="img"
-            height="300"
-            image={image || img}
-            alt={name}
-        />
-        <CardContent>
-            <Typography variant="h5" component="div">{name}</Typography>
-
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>{description}</Typography>
-
-            <Typography variant="h6">${price}</Typography>
-
-            <Typography variant="body2">Stock: {stock}</Typography>
-
-            <Typography sx={{ mt: 2 }}>Categorías:</Typography>
-
-            {/* <Chip label={categories} size="small" sx={{ mr: 1, mt: 1 }}/> */}
-            {categories?.map((categoryId) => (
-                <Chip
-                    key={categoryId}
-                    label={categoriesMap?.[categoryId]}
-                    size="small"
-                    sx={{ mr: 1, mt: 1 }}
-                />
-            ))}
-      </CardContent>
-
-      <CardActions>
-        <NumberSpinner 
-            value={quantity}
-            onValueChange={setQuantity}
-            min={1}
-            max={stock}
-            label="Cantidad"
-            size="small"
-        />
-        <Button 
-            onClick={handleAddCart}
-            variant="contained"
-            disabled={stock === 0}
-            sx={{mt: 2, width: 150}}
+        <Card
+            elevation={3}
+            sx={{
+                flex: "1 1 300",
+                maxWidth: 350
+            }}
         >
-          Agregar al carrito
-        </Button>
-      </CardActions>
-    </Card>
+            <CardMedia
+                component="img"
+                height="300"
+                image={image || img}
+                alt={name}
+            />
+            <CardContent>
+                <Typography variant="h5" component="div">{name}</Typography>
+
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>{description}</Typography>
+
+                <Typography variant="h6">${price}</Typography>
+
+                <Typography variant="body2">Stock: {stock}</Typography>
+
+                <Typography sx={{ mt: 2 }}>Categorías:</Typography>
+
+                {categories?.map((categoryId) => (
+                    <Chip
+                        key={categoryId}
+                        label={categoriesMap?.[categoryId]}
+                        size="small"
+                        sx={{ mr: 1, mt: 1 }}
+                    />
+                ))}
+            </CardContent>
+
+            <CardActions>
+                <NumberSpinner
+                    value={quantity}
+                    onValueChange={setQuantity}
+                    min={1}
+                    max={stock}
+                    label="Cantidad"
+                    size="small"
+                />
+                <Button
+                    onClick={handleAddCart}
+                    variant="contained"
+                    disabled={stock === 0}
+                    sx={{ mt: 2, width: 150 }}
+                >
+                    Agregar al carrito
+                </Button>
+            </CardActions>
+        </Card>
     )
 }
 

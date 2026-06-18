@@ -1,51 +1,31 @@
+// TokenContext y CurrentUserContext se mantienen en React Context porque son datos de sesión.
+// CartContext y CategoryContext fueron migrados a Redux (ver store/slices/).
 import { createContext, useState } from "react";
 
 export const TokenContext = createContext("")
 
 export const CurrentUserContext = createContext({})
 
-export const CartContext = createContext({})
-
-export const CategoryContext = createContext([])
-
-export function ContextProvider({children}) {
+export function ContextProvider({ children }) {
     const [tokenContext, setTokenContext] = useState("")
 
     const [currentUser, setCurrentUser] = useState({})
 
-    const [cart, setCart] = useState({})
-
-    const [categories, setCategories] = useState([])
-
     return (
         <TokenContext
-            value ={{
+            value={{
                 tokenContext,
                 setTokenContext
             }}
         >
-            <CartContext
+            <CurrentUserContext
                 value={{
-                    cart,
-                    setCart
+                    currentUser,
+                    setCurrentUser
                 }}
             >
-                <CurrentUserContext
-                    value={{
-                        currentUser,
-                        setCurrentUser
-                    }}
-                >
-                    <CategoryContext
-                        value={{
-                            categories,
-                            setCategories
-                        }}
-                    >
-                        {children}
-                    </CategoryContext>
-                </CurrentUserContext>
-            </CartContext>
+                {children}
+            </CurrentUserContext>
         </TokenContext>
     )
 }

@@ -10,11 +10,11 @@ services:
       MYSQL_ROOT_PASSWORD: nahuel
       MYSQL_DATABASE: e-commerce
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pnahuel"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pnahuel" ]
       interval: 5s
       timeout: 5s
       retries: 20

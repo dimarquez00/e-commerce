@@ -1,34 +1,37 @@
-import { Alert, Box, Button, Card, CardContent, CircularProgress, Container, Snackbar, Typography, Divider, Chip } from "@mui/material"
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CloseIcon from "@mui/icons-material/Close";
-import IconButton from "@mui/material/IconButton";
+import { Box, Button, CircularProgress, Container, Typography } from "@mui/material"
 import CartCard from "./CartCard"
-import { useContext, useEffect, useState } from "react"
-import { CartContext, CurrentUserContext, TokenContext } from "../../context/ContextProvider"
-import ConfirmedOrder from "./ConfirmedOrder";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react"
+import { CurrentUserContext, TokenContext } from "../../context/ContextProvider"
+// useSelector lee datos del store; useDispatch envía acciones al store
+import { useSelector, useDispatch } from "react-redux"
+// clearCart es la acción del cartSlice para vaciar el carrito tras confirmar el pedido
+import { clearCart } from "../../store/slices/cartSlice"
+import { useNavigate } from "react-router-dom";
 
 const CartList = () => {
-    const {cart, setCart} = useContext(CartContext)
-    const {tokenContext} = useContext(TokenContext)
-    const {currentUser} = useContext(CurrentUserContext)
+    // useSelector se suscribe al store y devuelve el objeto de items del carrito
+    // { [productId]: quantity } — cada vez que cambie, CartList se re-renderiza automáticamente
+    // Antes: const { cart, setCart } = useContext(CartContext)
+    const cart = useSelector((state) => state.cart.items)
 
-    // const [confirmedOrder, setConfirmedOrder] = useState(null)
+    // useDispatch devuelve la función dispatch para enviar acciones al store
+    const dispatch = useDispatch()
+
+    const { tokenContext } = useContext(TokenContext)
+    const { currentUser } = useContext(CurrentUserContext)
+
     const [loading, setLoading] = useState(false)
-    const [success, setSuccess] = useState(false)
 
     const navigate = useNavigate()
 
-    console.log(cart)
     const userId = currentUser?.id
 
     const isLoggedIn = !!tokenContext;
     const isCartEmpty = Object.keys(cart).length === 0;
 
     const handleOrder = async () => {
-        if (cart === {}) {
-            return
-        }
+        if (isCartEmpty) return
+
         setLoading(true);
         try {
             // 1. Crear orden
@@ -40,9 +43,7 @@ const CartList = () => {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${tokenContext}`
                     },
-                    body: JSON.stringify({
-                        "userId": userId
-                    })
+                    body: JSON.stringify({ "userId": userId })
                 }
             );
 
@@ -55,23 +56,17 @@ const CartList = () => {
 
             // 2. Agregar productos
             for (const [productId, quantity] of Object.entries(cart)) {
-
                 for (let i = 0; i < quantity; i++) {
-
                     const addProductResponse = await fetch(
                         `api/orders/${orderId}/products/${productId}`,
                         {
                             method: "POST",
-                            headers: {
-                                "Authorization": `Bearer ${tokenContext}`
-                            }
+                            headers: { "Authorization": `Bearer ${tokenContext}` }
                         }
                     );
 
                     if (!addProductResponse.ok) {
-                        throw new Error(
-                            `Error agregando producto ${productId}`
-                        );
+                        throw new Error(`Error agregando producto ${productId}`);
                     }
                 }
             }
@@ -81,9 +76,7 @@ const CartList = () => {
                 `api/orders/${orderId}`,
                 {
                     method: "PUT",
-                    headers: {
-                        "Authorization": `Bearer ${tokenContext}`
-                    }
+                    headers: { "Authorization": `Bearer ${tokenContext}` }
                 }
             );
 
@@ -92,21 +85,13 @@ const CartList = () => {
             }
 
             const orderData = await confirmResponse.json();
-
-            // 4. Mostrar confirmación
             console.log(orderData);
-            // alert("Pedido confirmado");
 
-            // 5. Vaciar carrito
-            setCart({});
-            setSuccess(true);
+            // 4. Vaciar el carrito en el store de Redux
+            dispatch(clearCart())
 
-            // 6. Ir a view de confirmación de pedido
-            navigate("/confirmedorder", {
-                state: {
-                    order: orderData
-                }
-            })
+            // 5. Ir a la vista de confirmación de pedido
+            navigate("/confirmedorder", { state: { order: orderData } })
 
         } catch (error) {
             console.error(error);
@@ -115,16 +100,11 @@ const CartList = () => {
             setLoading(false);
         }
     };
-    
 
     return (
         <Container>
             <Typography variant="h3">Carrito:</Typography>
-            <Box sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 4,
-            }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {Object.entries(cart).map(([id, quantity]) => (
                     <CartCard
                         key={id}
@@ -133,12 +113,11 @@ const CartList = () => {
                     />
                 ))}
             </Box>
-            {/* <Typography>{Object.keys(cart).length}</Typography> */}
-            <Button 
+            <Button
                 onClick={handleOrder}
                 variant="contained"
                 disabled={loading || isCartEmpty || !isLoggedIn}
-                sx={{mt: 2}}
+                sx={{ mt: 2 }}
             >
                 {loading ? (
                     <CircularProgress size={24} />
