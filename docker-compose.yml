@@ -30,6 +30,8 @@ services:
       - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/e-commerce?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    volumes:
+      - ./uploads:/uploads   # persiste las imágenes subidas entre reinicios del contenedor
     depends_on:
       mysql-db:
         condition: service_healthy

@@ -93,6 +93,7 @@ public class ProductService {
                 .description(entity.getDescription())
                 .price(entity.getPrice())
                 .stock(entity.getStock())
+                .image(entity.getImage())
                 .categories(CategoryEntityToIds(entity.getCategories()))
                 .build();
     }
@@ -105,6 +106,7 @@ public class ProductService {
                 .description(dto.getDescription())
                 .price(dto.getPrice())
                 .stock(dto.getStock())
+                .image(dto.getImage())
                 .categories(CategoryIdsToEntity(dto.getCategories()))
                 .build();
     }
@@ -116,6 +118,7 @@ public class ProductService {
                 .description(dto.getDescription())
                 .price(dto.getPrice())
                 .stock(dto.getStock())
+                .image(dto.getImage())
                 .categories(CategoryIdsToEntity(dto.getCategories()))
                 .build();
     }

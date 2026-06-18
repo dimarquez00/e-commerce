@@ -23,6 +23,8 @@ public class ProductDTO {
 
     private Integer stock;
 
+    private String image;
+
     @Default
     private List<Long> categories = new ArrayList<>();
 

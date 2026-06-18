@@ -65,6 +65,7 @@ const AdminProductList = () => {
                     description: productData.description,
                     price: Number(productData.price),
                     stock: Number(productData.stock),
+                    image: productData.image,
                     categories: productData.categories
                 })
             })
@@ -94,6 +95,7 @@ const AdminProductList = () => {
                     description: productData.description,
                     price: Number(productData.price),
                     stock: Number(productData.stock),
+                    image: productData.image,
                     categories: productData.categories
                 })
             })

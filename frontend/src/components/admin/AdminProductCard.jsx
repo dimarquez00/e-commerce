@@ -1,26 +1,47 @@
 import { Card, CardContent, Typography, Button, CardActions, Chip, CardMedia, TextField, Box, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material"
 import img from "../../assets/emptyImg.png"
-import { useState } from "react"
-// useSelector lee el mapa de categorías desde el store de Redux
+import { useContext, useRef, useState } from "react"
 import { useSelector } from "react-redux"
+import { TokenContext } from "../../context/ContextProvider"
 
 const AdminProductCard = ({ product, onUpdate, onDelete }) => {
-    // useSelector se suscribe al store y devuelve el mapa de categorías
-    // Antes: const { categories } = useContext(CategoryContext)
     const categories = useSelector((state) => state.category.categoriesMap)
+    const { tokenContext } = useContext(TokenContext)
 
     const [formData, setFormData] = useState(product)
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+    const [uploading, setUploading] = useState(false)
+    const fileInputRef = useRef(null)
 
     const isNew = !product.id
 
     const handleChange = (event) => {
         const { name, value } = event.target
+        setFormData(prev => ({ ...prev, [name]: value }))
+    }
 
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }))
+    const handleFileUpload = async (event) => {
+        const file = event.target.files[0]
+        if (!file) return
+
+        const data = new FormData()
+        data.append("file", file)
+
+        setUploading(true)
+        try {
+            const res = await fetch("/api/images", {
+                method: "POST",
+                headers: { Authorization: `Bearer ${tokenContext}` },
+                body: data
+            })
+            if (!res.ok) throw new Error()
+            const imageUrl = await res.text()
+            setFormData(prev => ({ ...prev, image: imageUrl }))
+        } catch {
+            alert("Error al subir la imagen")
+        } finally {
+            setUploading(false)
+        }
     }
 
     return (
@@ -76,6 +97,35 @@ const AdminProductCard = ({ product, onUpdate, onDelete }) => {
                     margin="normal"
                 />
 
+                {/* Input de archivo oculto — se activa con el botón de abajo */}
+                <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    onChange={handleFileUpload}
+                />
+
+                <Button
+                    variant="outlined"
+                    size="small"
+                    disabled={uploading}
+                    onClick={() => fileInputRef.current.click()}
+                    sx={{ mt: 1 }}
+                >
+                    {uploading ? "Subiendo..." : "Subir imagen"}
+                </Button>
+
+                {formData.image && (
+                    <Box
+                        component="img"
+                        src={formData.image}
+                        alt="preview"
+                        sx={{ width: "100%", height: 120, objectFit: "cover", mt: 1, borderRadius: 1 }}
+                        onError={(e) => { e.target.src = img }}
+                    />
+                )}
+
                 <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
                     Categorías
                 </Typography>
@@ -95,9 +145,7 @@ const AdminProductCard = ({ product, onUpdate, onDelete }) => {
                                 setFormData(prev => ({
                                     ...prev,
                                     categories: prev.categories?.includes(Number(id))
-                                        ? prev.categories.filter(
-                                            categoryId => categoryId !== Number(id)
-                                        )
+                                        ? prev.categories.filter(cId => cId !== Number(id))
                                         : [...(prev.categories || []), Number(id)]
                                 }))
                             }

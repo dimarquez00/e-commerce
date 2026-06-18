@@ -42,6 +42,8 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
+    private String image;
+
     @ManyToMany(mappedBy = "products")
     @Default
     private List<Order> orders = new ArrayList<>();
