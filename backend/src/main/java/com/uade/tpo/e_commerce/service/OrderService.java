@@ -40,9 +40,9 @@ public class OrderService {
     @Autowired
     private ProductService productService;
 
-    // Lista todos los pedidos como DTOs de respuesta (ids de productos y total).
-    public List<OrderResponseDTO> getOrders() {
-        List<Order> entityList = orderRepository.findAll();
+    // Lista solamente los pedidos del usuario logueado
+    public List<OrderResponseDTO> getOrders(String email) {
+        List<Order> entityList = orderRepository.findByUserEmail(email);
         List<OrderResponseDTO> dtoList = new ArrayList<>();
 
         for (Order entity : entityList) {

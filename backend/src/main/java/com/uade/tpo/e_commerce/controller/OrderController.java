@@ -5,10 +5,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.uade.tpo.e_commerce.model.dto.OrderDTO;
 import com.uade.tpo.e_commerce.model.dto.OrderResponseDTO;
 import com.uade.tpo.e_commerce.service.OrderService;
-import org.springframework.web.bind.annotation.PutMapping;
-
 
 @RestController
 @RequestMapping("/api/orders")
@@ -27,8 +27,9 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping()
-    public ResponseEntity<List<OrderResponseDTO>> getOrders() {
-        return ResponseEntity.ok(orderService.getOrders());
+    public ResponseEntity<List<OrderResponseDTO>> getOrders(Authentication authentication) {
+        String email = authentication.getName();
+        return ResponseEntity.ok(orderService.getOrders(email));
     }
 
     @GetMapping("/{id}")
@@ -38,7 +39,6 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponseDTO> createOrder(@RequestBody OrderDTO orderDto) {
-        // Order result = orderService.createOrder(orderRequest.getUser(), orderRequest.getProducts(), orderRequest.getTotal());
         OrderResponseDTO result = orderService.createOrder(orderDto);
         return ResponseEntity.created(URI.create("/api/orders/" + result.getId())).body(result);
     }

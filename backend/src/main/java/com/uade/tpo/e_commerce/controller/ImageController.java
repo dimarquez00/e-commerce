@@ -23,9 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/images")
 public class ImageController {
 
-    private static final String UPLOAD_DIR = "/uploads/";
+    private static final String UPLOAD_DIR = "../uploads/";
 
-    // Recibe un archivo, lo guarda en /uploads/ con nombre único y devuelve la URL de acceso
     @PostMapping
     public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) throws IOException {
         String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
@@ -35,7 +34,6 @@ public class ImageController {
         return ResponseEntity.ok("/api/images/" + filename);
     }
 
-    // Sirve una imagen almacenada en /uploads/ dado su nombre de archivo
     @GetMapping("/{filename}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) throws MalformedURLException {
         Path path = Paths.get(UPLOAD_DIR).resolve(filename);

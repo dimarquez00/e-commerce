@@ -1,30 +1,27 @@
-import { Alert, Box, Button, Container, IconButton, InputAdornment, TextField, Typography } from "@mui/material"
+import { Box, Button, Container, IconButton, InputAdornment, TextField, Typography } from "@mui/material"
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import { useContext, useState } from "react"
 import { CurrentUserContext, TokenContext } from "../../context/ContextProvider"
+import { NotificationContext } from "../../context/NotificationProvider"
 import { useNavigate } from "react-router-dom"
 
 const LogIn = () => {
     const { setTokenContext } = useContext(TokenContext)
     const { setCurrentUser } = useContext(CurrentUserContext)
+    const { showNotification } = useContext(NotificationContext)
     const navigate = useNavigate()
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
-    const [successMessage, setSuccessMessage] = useState("")
-    const [errorMessage, setErrorMessage] = useState("")
 
     const handleChangeEmail = (e) => setEmail(e.target.value)
     const handleChangePassword = (e) => setPassword(e.target.value)
 
     const handleClick = async () => {
-        setSuccessMessage("")
-        setErrorMessage("")
-
         if (email.trim() === "" || password.trim() === "") {
-            setErrorMessage("No pueden haber campos vacíos")
+            showNotification("No pueden haber campos vacíos", "error")
             return
         }
 
@@ -67,11 +64,12 @@ const LogIn = () => {
             const userData = await userRes.json()
             setCurrentUser(userData)
 
-            setSuccessMessage(`¡Bienvenido, ${userData.name}!`)
+            showNotification(`¡Bienvenido, ${userData.name}!`, "success")
+            navigate("/products")
 
         } catch (error) {
             console.error("Error al iniciar sesión:", error)
-            setErrorMessage(error.message || "Ocurrió un error inesperado")
+            showNotification(error.message || "Ocurrió un error inesperado", "error")
         }
     }
 
@@ -86,14 +84,6 @@ const LogIn = () => {
                 <Typography variant="h4">
                     Inicio de sesión
                 </Typography>
-
-                {successMessage && (
-                    <Alert severity="success">{successMessage}</Alert>
-                )}
-
-                {errorMessage && (
-                    <Alert severity="error">{errorMessage}</Alert>
-                )}
 
                 <TextField
                     label="Email"
