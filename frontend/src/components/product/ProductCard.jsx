@@ -35,9 +35,14 @@ const ProductCard = ({ product }) => {
     return (
         <Card
             elevation={3}
+            // sx={{
+            //     flex: "1 1 220",
+            //     maxWidth: 280
+            // }}
             sx={{
-                flex: "1 1 220",
-                maxWidth: 280
+                width: "100%",
+                display: "flex",
+                flexDirection: "column"
             }}
         >
             <CardMedia

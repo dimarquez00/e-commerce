@@ -79,40 +79,44 @@ const ProductList = () => {
     }
 
     return (
-        <Container>
+        <Box
+            sx={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 3,
+                flexDirection: { xs: "column", md: "row" }
+            }}
+        >
+            <ProductFilter
+                selectedCategories={selectedCategories}
+                setSelectedCategories={setSelectedCategories}
+                sortOrder={sortOrder}
+                setSortOrder={setSortOrder}
+            />
+
             <Box
+                // sx={{
+                //     flex: 1,
+                //     display: "flex",
+                //     flexWrap: "wrap",
+                //     justifyContent: "center",
+                //     gap: 2
+                // }}
                 sx={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: 3,
-                    flexDirection: { xs: "column", md: "row" }
+                    flex: 1,
+                    display: "grid",
+                    gap: 2,
+                    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))"
                 }}
             >
-                <ProductFilter
-                    selectedCategories={selectedCategories}
-                    setSelectedCategories={setSelectedCategories}
-                    sortOrder={sortOrder}
-                    setSortOrder={setSortOrder}
-                />
-
-                <Box
-                    sx={{
-                        flex: 1,
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "center",
-                        gap: 2
-                    }}
-                >
-                    {sortedProducts.map((product) => (
-                        <ProductCard
-                            key={product.id}
-                            product={product}
-                        />
-                    ))}
-                </Box>
+                {sortedProducts.map((product) => (
+                    <ProductCard
+                        key={product.id}
+                        product={product}
+                    />
+                ))}
             </Box>
-        </Container>
+        </Box>
     )
 }
 

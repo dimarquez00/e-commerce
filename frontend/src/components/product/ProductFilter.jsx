@@ -20,7 +20,7 @@ const ProductFilter = ({ selectedCategories, setSelectedCategories, sortOrder, s
     return (
         <Box
             sx={{
-                width: { xs: "100%", md: 260 },
+                width: { xs: "100%", md: 240 },
                 flexShrink: 0,
                 mb: 3
             }}
