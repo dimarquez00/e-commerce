@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux"
 import { updateQuantity, removeFromCart } from "../../store/slices/cartSlice"
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const CartCard = ({ id, quantityProp }) => {
+const CartCard = ({ id, quantityProp, onSubtotalChange }) => {
     const [product, setProduct] = useState({})
     const [quantity, setQuantity] = useState(quantityProp)
 
@@ -34,20 +34,92 @@ const CartCard = ({ id, quantityProp }) => {
         dispatch(removeFromCart(id))
     }
 
+    const imageSrc = product.imageUrl || product.image || product.img || product.photo
+    const priceNumber = Number(String(product.price || 0).replace("$", "").replace(",", "."))
+    const subtotal = priceNumber * quantity
+
+    useEffect(() => {
+        if (onSubtotalChange) {
+            onSubtotalChange(id, subtotal)
+        }
+    }, [id, subtotal])
+
     return (
-        <Card elevation={3} sx={{ flex: 1 }}>
-            <CardContent>
-                <Typography variant="h5" component="div">{product.name}</Typography>
+        <Card
+            elevation={2}
+            sx={{
+                width: "100%",
+                mb: 2,
+                p: 2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 2,
+                borderRadius: 2
+            }}
+        >
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    flex: 1
+                }}
+            >
+                {imageSrc && (
+                    <Box
+                        component="img"
+                        src={
+                            String(imageSrc).startsWith("http") || String(imageSrc).startsWith("/api")
+                                ? imageSrc
+                                : `/api/images/${imageSrc}`
+                        }
+                        alt={product.name}
+                        sx={{
+                            width: 110,
+                            height: 110,
+                            objectFit: "contain",
+                            borderRadius: 1
+                        }}
+                    />
+                )}
 
-                <Typography variant="h6">${product.price}</Typography>
-            </CardContent>
+                <Box>
+                    <Typography variant="h6" component="div" sx={{ mb: 2 }}>
+                        {product.name}
+                    </Typography>
 
-            <CardActions>
-                <NumberSpinner value={quantity} onValueChange={handleQuantityChange} min={1} label="Cantidad" size="small" />
-                <IconButton onClick={handleRemoveCart} aria-label="delete" size="large">
-                    <DeleteIcon fontSize="inherit" />
+                    <NumberSpinner
+                        value={quantity}
+                        onValueChange={handleQuantityChange}
+                        min={1}
+                        label="Cantidad"
+                        size="small"
+                    />
+                </Box>
+            </Box>
+
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 3
+                }}
+            >
+                <IconButton onClick={handleRemoveCart} aria-label="delete" size="small">
+                    <DeleteIcon />
                 </IconButton>
-            </CardActions>
+
+                <Typography
+                    variant="h5"
+                    sx={{
+                        minWidth: 120,
+                        textAlign: "right"
+                    }}
+                >
+                    ${subtotal.toFixed(2)}
+                </Typography>
+            </Box>
         </Card>
     )
 }
