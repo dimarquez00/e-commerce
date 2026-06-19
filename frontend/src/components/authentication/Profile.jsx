@@ -1,16 +1,13 @@
-import { Alert, Box, Button, Container, IconButton, InputAdornment, TextField, Typography } from "@mui/material"
-import Visibility from "@mui/icons-material/Visibility"
-import VisibilityOff from "@mui/icons-material/VisibilityOff"
+import { Box, Button, Container, TextField, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { CurrentUserContext, TokenContext } from "../../context/ContextProvider"
+import { NotificationContext } from "../../context/NotificationProvider"
 
 const Profile = () => {
-    const {tokenContext} = useContext(TokenContext)
-    const {currentUser, setCurrentUser} = useContext(CurrentUserContext)
-    
-    const [showPassword, setShowPassword] = useState(false)
-    const [successMessage, setSuccessMessage] = useState("")
-    const [errorMessage, setErrorMessage] = useState("")
+    const { tokenContext } = useContext(TokenContext)
+    const { currentUser, setCurrentUser } = useContext(CurrentUserContext)
+    const { showNotification } = useContext(NotificationContext)
+
     const [formData, setFormData] = useState({
         name: "",
         dateOB: "",
@@ -21,6 +18,16 @@ const Profile = () => {
             province: "",
             postalCode: ""
         }
+    })
+
+    const [touched, setTouched] = useState({
+        name: false,
+        dateOB: false,
+        email: false,
+        street: false,
+        city: false,
+        province: false,
+        postalCode: false
     })
 
     useEffect(() => {
@@ -38,7 +45,7 @@ const Profile = () => {
             })
         }
     }, [currentUser])
-    
+
     const handleChange = (e) => {
         const { name, value } = e.target
 
@@ -59,10 +66,33 @@ const Profile = () => {
             }
         }))
     }
-    
-    const handleUpdatedProfile = async () => {
-        setSuccessMessage("")
-        setErrorMessage("")
+
+    const handleBlur = (field) => {
+        setTouched(prev => ({
+            ...prev,
+            [field]: true
+        }))
+    }
+
+    const hasError = (field, value) => {
+        return touched[field] && value.trim() === ""
+    }
+
+    const markAllFieldsAsTouched = () => {
+        setTouched({
+            name: true,
+            dateOB: true,
+            email: true,
+            street: true,
+            city: true,
+            province: true,
+            postalCode: true
+        })
+    }
+
+    const handleUpdatedProfile = async (e) => {
+        e.preventDefault()
+        markAllFieldsAsTouched()
 
         if (
             formData.name.trim() === "" ||
@@ -73,7 +103,7 @@ const Profile = () => {
             formData.address.province.trim() === "" ||
             formData.address.postalCode.trim() === ""
         ) {
-            setErrorMessage("Todos los campos son obligatorios")
+            showNotification("Todos los campos son obligatorios", "error")
             return
         }
 
@@ -103,24 +133,26 @@ const Profile = () => {
             )
 
             if (!response.ok) {
-                throw new Error("Error al registrar usuario")
+                throw new Error("Error al actualizar usuario")
             }
 
             const updatedUser = await response.json()
 
             setCurrentUser(updatedUser)
-            setSuccessMessage("¡Perfil actualizado correctamente!")
+            showNotification("¡Perfil actualizado correctamente!", "success")
 
         } catch (error) {
             console.error(error)
-            setErrorMessage("Ocurrió un error al actualizar el perfil")
+            showNotification("Ocurrió un error al actualizar el perfil", "error")
         }
     }
-
 
     return (
         <Container maxWidth="sm">
             <Box
+                component="form"
+                onSubmit={handleUpdatedProfile}
+                noValidate
                 sx={{
                     display: "flex",
                     flexDirection: "column",
@@ -132,19 +164,15 @@ const Profile = () => {
                     Información personal
                 </Typography>
 
-                {successMessage && (
-                    <Alert severity="success">{successMessage}</Alert>
-                )}
-
-                {errorMessage && (
-                    <Alert severity="error">{errorMessage}</Alert>
-                )}
-
                 <TextField
                     label="Nombre completo"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
+                    onBlur={() => handleBlur("name")}
+                    required
+                    error={hasError("name", formData.name)}
+                    helperText={hasError("name", formData.name) ? "Ingresá tu nombre completo" : ""}
                 />
 
                 <TextField
@@ -153,11 +181,15 @@ const Profile = () => {
                     type="date"
                     value={formData.dateOB}
                     onChange={handleChange}
+                    onBlur={() => handleBlur("dateOB")}
+                    required
+                    error={hasError("dateOB", formData.dateOB)}
+                    helperText={hasError("dateOB", formData.dateOB) ? "Ingresá tu fecha de nacimiento" : ""}
                     fullWidth
                     slotProps={{
                         inputLabel: {
                             shrink: true
-                    },
+                        },
                     }}
                 />
 
@@ -166,6 +198,10 @@ const Profile = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
+                    onBlur={() => handleBlur("email")}
+                    required
+                    error={hasError("email", formData.email)}
+                    helperText={hasError("email", formData.email) ? "Ingresá tu email" : ""}
                 />
 
                 <TextField
@@ -173,6 +209,10 @@ const Profile = () => {
                     name="street"
                     value={formData.address.street}
                     onChange={handleAddressChange}
+                    onBlur={() => handleBlur("street")}
+                    required
+                    error={hasError("street", formData.address.street)}
+                    helperText={hasError("street", formData.address.street) ? "Ingresá tu calle" : ""}
                 />
 
                 <TextField
@@ -180,6 +220,10 @@ const Profile = () => {
                     name="city"
                     value={formData.address.city}
                     onChange={handleAddressChange}
+                    onBlur={() => handleBlur("city")}
+                    required
+                    error={hasError("city", formData.address.city)}
+                    helperText={hasError("city", formData.address.city) ? "Ingresá tu ciudad" : ""}
                 />
 
                 <TextField
@@ -187,6 +231,10 @@ const Profile = () => {
                     name="province"
                     value={formData.address.province}
                     onChange={handleAddressChange}
+                    onBlur={() => handleBlur("province")}
+                    required
+                    error={hasError("province", formData.address.province)}
+                    helperText={hasError("province", formData.address.province) ? "Ingresá tu provincia" : ""}
                 />
 
                 <TextField
@@ -194,11 +242,15 @@ const Profile = () => {
                     name="postalCode"
                     value={formData.address.postalCode}
                     onChange={handleAddressChange}
+                    onBlur={() => handleBlur("postalCode")}
+                    required
+                    error={hasError("postalCode", formData.address.postalCode)}
+                    helperText={hasError("postalCode", formData.address.postalCode) ? "Ingresá tu código postal" : ""}
                 />
 
                 <Button
                     variant="contained"
-                    onClick={handleUpdatedProfile}
+                    type="submit"
                 >
                     Guardar cambios
                 </Button>

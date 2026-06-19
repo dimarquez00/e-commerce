@@ -16,10 +16,32 @@ const LogIn = () => {
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
 
+    const [touched, setTouched] = useState({
+        email: false,
+        password: false
+    })
+
     const handleChangeEmail = (e) => setEmail(e.target.value)
     const handleChangePassword = (e) => setPassword(e.target.value)
 
-    const handleClick = async () => {
+    const handleBlur = (field) => {
+        setTouched(prev => ({
+            ...prev,
+            [field]: true
+        }))
+    }
+
+    const emailHasError = touched.email && email.trim() === ""
+    const passwordHasError = touched.password && password.trim() === ""
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+
+        setTouched({
+            email: true,
+            password: true
+        })
+
         if (email.trim() === "" || password.trim() === "") {
             showNotification("No pueden haber campos vacíos", "error")
             return
@@ -75,12 +97,17 @@ const LogIn = () => {
 
     return (
         <Container maxWidth="sm">
-            <Box sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-                m: 4,
-            }}>
+            <Box
+                component="form"
+                onSubmit={handleSubmit}
+                noValidate
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                    m: 4,
+                }}
+            >
                 <Typography variant="h4">
                     Inicio de sesión
                 </Typography>
@@ -90,6 +117,10 @@ const LogIn = () => {
                     name="email"
                     value={email}
                     onChange={handleChangeEmail}
+                    onBlur={() => handleBlur("email")}
+                    required
+                    error={emailHasError}
+                    helperText={emailHasError ? "Ingresá tu email" : ""}
                 />
 
                 <TextField
@@ -98,6 +129,10 @@ const LogIn = () => {
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={handleChangePassword}
+                    onBlur={() => handleBlur("password")}
+                    required
+                    error={passwordHasError}
+                    helperText={passwordHasError ? "Ingresá tu contraseña" : ""}
                     slotProps={{
                         input: {
                             endAdornment: (
@@ -117,7 +152,7 @@ const LogIn = () => {
 
                 <Button
                     variant="contained"
-                    onClick={handleClick}
+                    type="submit"
                 >
                     Iniciar sesión
                 </Button>
