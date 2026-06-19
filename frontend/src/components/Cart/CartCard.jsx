@@ -105,7 +105,7 @@ const CartCard = ({ id, quantityProp, onSubtotalChange }) => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: { xs: "space-between", sm: "flex-end" },
-                    gap: 3
+                    gap: 3,
                     width: { xs: "100%", sm: "auto" }
                 }}
             >
