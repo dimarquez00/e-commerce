@@ -52,7 +52,8 @@ const CartCard = ({ id, quantityProp, onSubtotalChange }) => {
                 mb: 2,
                 p: 2,
                 display: "flex",
-                alignItems: "center",
+                flexDirection: { xs: "column", sm: "row" },
+                alignItems: { xs: "stretch", sm: "center" },
                 justifyContent: "space-between",
                 gap: 2,
                 borderRadius: 2
@@ -76,15 +77,15 @@ const CartCard = ({ id, quantityProp, onSubtotalChange }) => {
                         }
                         alt={product.name}
                         sx={{
-                            width: 110,
-                            height: 110,
+                            width: { xs: 80, sm: 110 },
+                            height: { xs: 80, sm: 110 },
                             objectFit: "contain",
                             borderRadius: 1
                         }}
                     />
                 )}
 
-                <Box>
+                <Box sx={{ flex: 1 }}>
                     <Typography variant="h6" component="div" sx={{ mb: 2 }}>
                         {product.name}
                     </Typography>
@@ -103,7 +104,9 @@ const CartCard = ({ id, quantityProp, onSubtotalChange }) => {
                 sx={{
                     display: "flex",
                     alignItems: "center",
+                    justifyContent: { xs: "space-between", sm: "flex-end" },
                     gap: 3
+                    width: { xs: "100%", sm: "auto" }
                 }}
             >
                 <IconButton onClick={handleRemoveCart} aria-label="delete" size="small">
@@ -113,7 +116,7 @@ const CartCard = ({ id, quantityProp, onSubtotalChange }) => {
                 <Typography
                     variant="h5"
                     sx={{
-                        minWidth: 120,
+                        minWidth: { xs: "auto", sm: 120 },
                         textAlign: "right"
                     }}
                 >
