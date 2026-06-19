@@ -1,6 +1,7 @@
 ### Levantar contenedores usar: 
 ### docker-compose up -d --build
 ### Ingresar a frontend: http://localhost
+### Reinicia contenedores (borra volumen): doker compose down -v
 services:
   mysql-db:
     image: mysql:8.0
