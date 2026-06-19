@@ -1,4 +1,4 @@
-import { Card, CardActions, CardContent, IconButton, Typography } from "@mui/material"
+import { Card, CardActions, CardContent, IconButton, Typography, Box } from "@mui/material"
 import { useEffect, useState } from "react"
 import NumberSpinner from "../NumberSpinner"
 // useDispatch envía acciones al store global de Redux
