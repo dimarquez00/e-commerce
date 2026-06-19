@@ -36,8 +36,8 @@ const ProductCard = ({ product }) => {
         <Card
             elevation={3}
             sx={{
-                flex: "1 1 300",
-                maxWidth: 350
+                flex: "1 1 220",
+                maxWidth: 280
             }}
         >
             <CardMedia

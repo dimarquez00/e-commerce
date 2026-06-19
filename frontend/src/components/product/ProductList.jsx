@@ -90,7 +90,7 @@ const ProductList = () => {
                     display: "flex",
                     flexWrap: "wrap",
                     justifyContent: "center",
-                    gap: 4
+                    gap: 2
                 }}
             >
                 {sortedProducts.map((product) => (

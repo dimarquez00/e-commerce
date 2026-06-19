@@ -4,7 +4,7 @@ import ProductList from '../components/product/ProductList'
 const ProductsView = () => {
 
     return (
-        <Container>
+        <Container maxWidth="xl">
             <ProductList/>
         </Container>
     )
