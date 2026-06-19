@@ -1,6 +1,8 @@
-import { Container } from '@mui/material'
+import { Container, CssBaseline } from '@mui/material'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import { useMemo, useState } from 'react'
 import ResponsiveAppBar from './components/ResponsiveAppBar'
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import ProductsView from './views/ProductsView.jsx'
 import LogInView from './views/LogInView'
 import ProfileView from './views/ProfileView.jsx'
@@ -11,35 +13,53 @@ import ConfirmedOrderView from './views/ConfirmedOrderView.jsx'
 import RegisterView from './views/RegisterView.jsx'
 import ProductDetailView from './views/ProductDetailView.jsx'
 import OrdersView from './views/OrdersView.jsx'
-// Provider conecta el store de Redux con todos los componentes hijos del árbol
 import { Provider } from 'react-redux'
 import { store } from './store/index.js'
 
 function App() {
-    const navigate = useNavigate()
-    const location = useLocation()
+    const [mode, setMode] = useState(() => {
+        return localStorage.getItem("themeMode") || "light"
+    })
+
+    const theme = useMemo(() => createTheme({
+        palette: {
+            mode
+        }
+    }), [mode])
+
+    const toggleTheme = () => {
+        setMode(prevMode => {
+            const newMode = prevMode === "light" ? "dark" : "light"
+            localStorage.setItem("themeMode", newMode)
+            return newMode
+        })
+    }
 
     return (
-        // Provider hace que el store global esté disponible en todos los componentes
         <Provider store={store}>
-            {/* ContextProvider mantiene TokenContext, CurrentUserContext y NotificationProvider */}
-            <ContextProvider>
-                <Container>
-                    <ResponsiveAppBar />
-                    <Routes>
-                        <Route path='/' element={<ProductsView />} />
-                        <Route path='/products' element={<ProductsView />} />
-                        <Route path='/login' element={<LogInView />} />
-                        <Route path='/profile' element={<ProfileView />} />
-                        <Route path='/admin' element={<AdminView />} />
-                        <Route path='/cart' element={<CartView />} />
-                        <Route path='/confirmedorder' element={<ConfirmedOrderView />} />
-                        <Route path='/register' element={<RegisterView />} />
-                        <Route path='/products/:id' element={<ProductDetailView />} />
-                        <Route path='/orders' element={<OrdersView />} />
-                    </Routes>
-                </Container>
-            </ContextProvider>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <ContextProvider>
+                    <Container>
+                        <ResponsiveAppBar
+                            mode={mode}
+                            toggleTheme={toggleTheme}
+                        />
+                        <Routes>
+                            <Route path='/' element={<ProductsView />} />
+                            <Route path='/products' element={<ProductsView />} />
+                            <Route path='/login' element={<LogInView />} />
+                            <Route path='/profile' element={<ProfileView />} />
+                            <Route path='/admin' element={<AdminView />} />
+                            <Route path='/cart' element={<CartView />} />
+                            <Route path='/confirmedorder' element={<ConfirmedOrderView />} />
+                            <Route path='/register' element={<RegisterView />} />
+                            <Route path='/products/:id' element={<ProductDetailView />} />
+                            <Route path='/orders' element={<OrdersView />} />
+                        </Routes>
+                    </Container>
+                </ContextProvider>
+            </ThemeProvider>
         </Provider>
     )
 }

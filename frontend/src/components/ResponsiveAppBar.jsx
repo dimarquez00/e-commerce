@@ -11,29 +11,21 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import Badge from '@mui/material/Badge';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { useNavigate } from 'react-router-dom';
 import { CurrentUserContext, TokenContext } from '../context/ContextProvider';
 import { useSelector } from 'react-redux';
-// import { CartContext } from '../context/ContextProvider';
 
 const pages = [
     { label: 'Productos', path: '/products' },
-    // { label: 'Profile', path: '/profile' },
-    // { label: 'Admin', path: '/admin' },
-    // { label: 'Carrito', path: '/cart' },
-    // { label: 'LogIn', path: '/login' },
-    // { label: 'Register', path: '/register' },
 ];
-// const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-
-const ResponsiveAppBar = () => {
-    // const {cart} = React.useContext(CartContext)
-    const {currentUser, setCurrentUser} = React.useContext(CurrentUserContext)
-    const {setTokenContext} = React.useContext(TokenContext)
+const ResponsiveAppBar = ({ mode, toggleTheme }) => {
+    const { currentUser, setCurrentUser } = React.useContext(CurrentUserContext)
+    const { setTokenContext } = React.useContext(TokenContext)
     const cart = useSelector((state) => state.cart.items)
     const navigate = useNavigate();
 
@@ -48,18 +40,18 @@ const ResponsiveAppBar = () => {
     const isLoggedIn = !!currentUser;
 
     const settings = isLoggedIn
-    ? [
-        { label: "Perfil", path: "/profile" },
-        { label: "Pedidos", path: "/orders" },
-        ...(currentUser?.role === "ADMIN"
-            ? [{ label: "Admin", path: "/admin"}]
-            :[]),
-        { label: "Cerrar sesión", action: "logout" }
-    ]
-    : [
-        { label: "Iniciar sesión", path: "/login" },
-        { label: "Registrarse", path: "/register" }
-    ];
+        ? [
+            { label: "Perfil", path: "/profile" },
+            { label: "Pedidos", path: "/orders" },
+            ...(currentUser?.role === "ADMIN"
+                ? [{ label: "Admin", path: "/admin" }]
+                : []),
+            { label: "Cerrar sesión", action: "logout" }
+        ]
+        : [
+            { label: "Iniciar sesión", path: "/login" },
+            { label: "Registrarse", path: "/register" }
+        ];
 
     const handleLogout = () => {
         setTokenContext(null);
@@ -71,6 +63,7 @@ const ResponsiveAppBar = () => {
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
     };
+
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
     };
@@ -91,35 +84,17 @@ const ResponsiveAppBar = () => {
     };
 
     return (
-        <AppBar 
+        <AppBar
             position="static"
-            sx={{ mb: 4}}
+            sx={{ mb: 4 }}
         >
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="#app-bar-with-responsive-menu"
-                        sx={{
-                        mr: 2,
-                        display: { xs: 'none', md: 'flex' },
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        letterSpacing: '.3rem',
-                        color: 'inherit',
-                        textDecoration: 'none',
-                        }}
-                    >
-                        LOGO
-                    </Typography> */}
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
-                            aria-label="account of current user"
+                            aria-label="abrir menú de navegación"
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
                             onClick={handleOpenNavMenu}
@@ -127,6 +102,7 @@ const ResponsiveAppBar = () => {
                         >
                             <MenuIcon />
                         </IconButton>
+
                         <Menu
                             id="menu-appbar"
                             anchorEl={anchorElNav}
@@ -144,44 +120,43 @@ const ResponsiveAppBar = () => {
                             sx={{ display: { xs: 'block', md: 'none' } }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page.label} onClick={() => handleNavigation(page.path)}>
-                                <Typography sx={{ textAlign: 'center' }}>{page.label}</Typography>
+                                <MenuItem
+                                    key={page.label}
+                                    onClick={() => handleNavigation(page.path)}
+                                >
+                                    <Typography sx={{ textAlign: 'center' }}>
+                                        {page.label}
+                                    </Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
                     </Box>
-                    {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href="#app-bar-with-responsive-menu"
-                        sx={{
-                        mr: 2,
-                        display: { xs: 'flex', md: 'none' },
-                        flexGrow: 1,
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        letterSpacing: '.3rem',
-                        color: 'inherit',
-                        textDecoration: 'none',
-                        }}
-                    >
-                        LOGO
-                    </Typography> */}
+
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
-                        <Button
-                            key={page.label}
-                            onClick={() => handleNavigation(page.path)}
-                            sx={{ my: 2, color: 'white', display: 'block' }}
-                        >
-                            {page.label}
-                        </Button>
+                            <Button
+                                key={page.label}
+                                onClick={() => handleNavigation(page.path)}
+                                sx={{ my: 2, color: 'white', display: 'block' }}
+                            >
+                                {page.label}
+                            </Button>
                         ))}
                     </Box>
 
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Tooltip title={mode === "dark" ? "Modo claro" : "Modo oscuro"}>
+                            <IconButton
+                                color="inherit"
+                                onClick={toggleTheme}
+                            >
+                                {mode === "dark"
+                                    ? <Brightness7Icon />
+                                    : <Brightness4Icon />
+                                }
+                            </IconButton>
+                        </Tooltip>
+
                         <Tooltip title="Cuenta">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar>
@@ -192,7 +167,7 @@ const ResponsiveAppBar = () => {
 
                         <IconButton
                             color="inherit"
-                            aria-label="view cart"
+                            aria-label="ver carrito"
                             onClick={() => navigate("/cart")}
                         >
                             <Badge badgeContent={totalItems} color="secondary">
@@ -202,7 +177,7 @@ const ResponsiveAppBar = () => {
 
                         <Menu
                             sx={{ mt: '45px' }}
-                            id="menu-appbar"
+                            id="menu-user"
                             anchorEl={anchorElUser}
                             anchorOrigin={{
                                 vertical: 'top',
@@ -216,7 +191,6 @@ const ResponsiveAppBar = () => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-
                             {settings.map((setting) => (
                                 <MenuItem
                                     key={setting.label}
