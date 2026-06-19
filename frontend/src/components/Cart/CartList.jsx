@@ -20,6 +20,7 @@ const CartList = () => {
     const { currentUser } = useContext(CurrentUserContext)
 
     const [loading, setLoading] = useState(false)
+    const [subtotals, setSubtotals] = useState({})
 
     const navigate = useNavigate()
 
@@ -27,6 +28,17 @@ const CartList = () => {
 
     const isLoggedIn = !!tokenContext;
     const isCartEmpty = Object.keys(cart).length === 0;
+
+    const handleSubtotalChange = (id, subtotal) => {
+        setSubtotals((prev) => ({
+            ...prev,
+            [id]: subtotal
+        }))
+    }
+
+    const total = Object.keys(cart).reduce((acc, id) => {
+        return acc + (subtotals[id] || 0)
+    }, 0)
 
     const handleOrder = async () => {
         if (isCartEmpty) return
@@ -108,9 +120,33 @@ const CartList = () => {
                         key={id}
                         id={id}
                         quantityProp={quantity}
+                        onSubtotalChange={handleSubtotalChange}
                     />
                 ))}
             </Box>
+
+            {!isCartEmpty && (
+                <Box
+                    sx={{
+                        mt: 3,
+                        mb: 2,
+                        p: 2,
+                        borderTop: "1px solid #ddd",
+                        display: "flex",
+                        justifyContent: "flex-end"
+                    }}
+                >
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            fontWeight: "bold"
+                        }}
+                    >
+                        Total del carrito: ${total.toFixed(2)}
+                    </Typography>
+                </Box>
+            )}
+            
             <Button
                 onClick={handleOrder}
                 variant="contained"
