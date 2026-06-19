@@ -74,31 +74,43 @@ const ProductList = () => {
             </Box>
         )
 
-    if (error) return <Typography color="error">{error}</Typography>
+    if (error) {
+        return <Typography color="error">{error}</Typography>
+    }
 
     return (
         <Container>
-            <ProductFilter
-                selectedCategories={selectedCategories}
-                setSelectedCategories={setSelectedCategories}
-                sortOrder={sortOrder}
-                setSortOrder={setSortOrder}
-            />
-
             <Box
                 sx={{
                     display: "flex",
-                    flexWrap: "wrap",
-                    justifyContent: "center",
-                    gap: 2
+                    alignItems: "flex-start",
+                    gap: 3,
+                    flexDirection: { xs: "column", md: "row" }
                 }}
             >
-                {sortedProducts.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        product={product}
-                    />
-                ))}
+                <ProductFilter
+                    selectedCategories={selectedCategories}
+                    setSelectedCategories={setSelectedCategories}
+                    sortOrder={sortOrder}
+                    setSortOrder={setSortOrder}
+                />
+
+                <Box
+                    sx={{
+                        flex: 1,
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "center",
+                        gap: 2
+                    }}
+                >
+                    {sortedProducts.map((product) => (
+                        <ProductCard
+                            key={product.id}
+                            product={product}
+                        />
+                    ))}
+                </Box>
             </Box>
         </Container>
     )
